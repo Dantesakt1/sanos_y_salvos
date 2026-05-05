@@ -1,0 +1,6 @@
+com\example\demo\repository\MascotaRepository.class
+com\example\demo\controller\SecurityConfig.class
+com\example\demo\MascotaApplication.class
+com\example\demo\model\Mascota.class
+com\example\demo\controller\VentaController.class
+com\example\demo\controller\MascotaController.class
