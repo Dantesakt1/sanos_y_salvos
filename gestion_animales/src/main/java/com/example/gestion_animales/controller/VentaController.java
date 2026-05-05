@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.gestion_animales.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.gestion_animales.controller;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.Mascota;
-import com.example.demo.repository.MascotaRepository;
+import com.example.gestion_animales.model.Mascota;
+import com.example.gestion_animales.repository.MascotaRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
