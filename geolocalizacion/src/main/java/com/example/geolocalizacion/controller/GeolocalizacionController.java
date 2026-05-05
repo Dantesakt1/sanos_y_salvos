@@ -1,4 +1,4 @@
-package main.java.com.example.geolocalizacion.controller;
+package com.example.geolocalizacion.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.service.DistanciaService;
+import com.example.geolocalizacion.service.DistanciaService;
 
 @RestController
 @RequestMapping("/api/geolocalizacion")

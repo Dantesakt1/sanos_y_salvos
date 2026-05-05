@@ -1,4 +1,4 @@
-package main.java.com.example.geolocalizacion.service;
+package com.example.geolocalizacion.service;
 
 import org.springframework.stereotype.Service;
 
