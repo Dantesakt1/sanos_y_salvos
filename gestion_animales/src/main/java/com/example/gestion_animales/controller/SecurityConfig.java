@@ -36,6 +36,7 @@ public class SecurityConfig {
                 return config;
              }))
              .authorizeHttpRequests(auth->auth
+                .requestMatchers("/api/mascotas/buscar-compatibles").permitAll()
                 .requestMatchers("/api/mascotas/**").authenticated()
                 .anyRequest().permitAll()
              )
