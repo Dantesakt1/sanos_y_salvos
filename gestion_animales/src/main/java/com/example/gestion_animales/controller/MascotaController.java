@@ -8,6 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestion_animales.model.Mascota;
@@ -73,5 +74,13 @@ public class MascotaController {
     public void escucharPendientes(Mascota mascota) {
         mascotaRepository.save(mascota);
         System.out.println("Mascota pendiente guardada exitosamente.");
+    }
+
+    //para el motor-coincidencia
+    @GetMapping("/buscar-compatibles")
+    @CircuitBreaker(name = "dbMascotas", fallbackMethod = "fallbackListar")
+    public List<Mascota> buscarCompatibles(@RequestParam String especie, @RequestParam String estado) {
+        System.out.println("Buscando candidatos: " + especie + " - " + estado);
+        return mascotaRepository.findByEspecieAndEstado(especie, estado);
     }
 }
