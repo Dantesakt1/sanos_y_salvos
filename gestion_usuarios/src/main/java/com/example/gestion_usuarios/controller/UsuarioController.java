@@ -2,10 +2,19 @@ package com.example.gestion_usuarios.controller;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.gestion_usuarios.model.Usuario;
 import com.example.gestion_usuarios.repository.UsuarioRepository;
+
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
@@ -50,7 +59,7 @@ public class UsuarioController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
-    // Y su respectivo fallback por si la DB falla
+    // fallback por si la DB falla
     public Usuario fallbackBuscarPorId(Long id, Throwable e) {
         System.err.println("Error al buscar usuario " + id + ": " + e.getMessage());
         Usuario errorUser = new Usuario();

@@ -1,5 +1,4 @@
-package com.example.gestion_usuarios.controller; // Lo dejamos en el mismo paquete que tus otros controllers
-
+package com.example.gestion_usuarios.controller;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
