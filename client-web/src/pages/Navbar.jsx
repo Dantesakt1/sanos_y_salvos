@@ -25,6 +25,10 @@ export function Navbar() {
           <Map size={18} style={{marginRight: '5px'}}/> Mapa
         </Link>
         
+        <Link to="/mis-reportes" className={esActivo('/mis-reportes')}>
+          <Map size={18} style={{marginRight: '5px'}}/> Mis Reportes
+        </Link>
+        
         <Link to="/coincidencias" className={esActivo('/coincidencias')}>
           <Search size={18} style={{marginRight: '5px'}}/> Coincidencias
         </Link>

@@ -231,3 +231,83 @@ body { font-family: 'Inter', sans-serif; background-color: var(--gris-claro); ma
 .btn-publicar:hover {
   background: var(--morado-dark);
 }
+
+/* MIS REPORTES PAGE */
+.mis-reportes-container { padding: 40px 10%; }
+.page-header h1 { font-size: 2.5rem; margin-bottom: 10px; color: #111; }
+.page-header p { color: #666; margin-bottom: 40px; }
+
+.filtros-bar {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+.tabs-container { display: flex; gap: 10px; }
+.tab-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #f3f4f6;
+  font-weight: 600;
+  cursor: pointer;
+  color: #4b5563;
+}
+.tab-btn.activo { background: var(--morado); color: white; }
+
+.reporte-card-horizontal {
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  min-height: 250px;
+}
+
+.card-image-section { width: 300px; position: relative; }
+.card-image-section img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Estilo para Reportes Resueltos (Captura d1fef7) */
+.reporte-card-horizontal.resuelto .card-image-section {
+  background: #10b981;
+}
+.overlay-resuelto {
+  position: absolute; inset: 0; background: rgba(16, 185, 129, 0.8);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: white; font-weight: bold;
+}
+
+.card-info-section { flex: 1; padding: 30px; display: flex; flex-direction: column; }
+.tag-perdida { background: #fee2e2; color: #ef4444; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; margin-left: 10px; }
+
+.info-meta { display: flex; gap: 20px; color: #6b7280; font-size: 0.9rem; margin: 15px 0; }
+.info-meta span { display: flex; align-items: center; gap: 5px; }
+
+.alerta-coincidencias {
+  background: #f5f3ff; color: var(--morado); padding: 12px 20px;
+  border-radius: 10px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+
+.resuelto-status-bar {
+  background: #f0fdf4; color: #166534; padding: 12px 20px;
+  border-radius: 10px; border: 1px solid #bbf7d0; font-weight: 600;
+}
+
+.acciones-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-action {
+  padding: 8px 15px; border-radius: 8px; border: none; font-weight: 600; font-size: 0.85rem;
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+}
+
+/* Colores de Botones */
+.btn-action.purple { background: var(--morado); color: white; }
+.btn-action.green { background: #10b981; color: white; }
+.btn-action.gray { background: #e5e7eb; color: #374151; }
+.btn-action.light-green { background: #dcfce7; color: #166534; }
+.btn-action.red-trash { background: #fee2e2; color: #991b1b; }

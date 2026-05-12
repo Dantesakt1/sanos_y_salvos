@@ -8,6 +8,7 @@ import { HomePage } from './pages/HomePage';
 import { ReportarPage } from './pages/ReportarPage';
 import { CoincidenciasPage } from './pages/CoincidenciasPage';
 import { MapaPage } from './pages/MapaPage';
+import { MisReportesPage } from './pages/MisReportesPage';
 
 import './App.css';
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/reportar" element={<ReportarPage />} />
             <Route path="/coincidencias" element={<CoincidenciasPage />} />
             <Route path="/mapa" element={<MapaPage />} />
+            <Route path="/mis-reportes" element={<MisReportesPage />} />
           </Routes>
         ) : (
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
