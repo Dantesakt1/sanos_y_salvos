@@ -1,41 +1,132 @@
-/* Colores Base */
+/* App.css - Sanos y Salvos */
 :root {
-  --morado-principal: #7c3aed;
-  --morado-oscuro: #5b21b6;
-  --fondo-gris: #f9fafb;
-  --rojo-alerta: #ef4444;
-  --verde-exito: #10b981;
+  --morado: #7c3aed;
+  --morado-dark: #5b21b6;
+  --gris-claro: #f9fafb;
 }
 
-body { font-family: 'Inter', sans-serif; background-color: var(--fondo-gris); margin: 0; }
+body { font-family: 'Inter', sans-serif; background-color: var(--gris-claro); margin: 0; padding: 0; }
 
-/* Navegación */
-.nav-barra { background: white; border-bottom: 1px solid #ddd; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; sticky: top; z-index: 100; }
-.nav-logo { display: flex; align-items: center; gap: 10px; color: var(--morado-principal); text-decoration: none; font-weight: bold; font-size: 1.5rem; }
-.nav-enlaces { display: flex; gap: 20px; align-items: center; }
-.nav-link { text-decoration: none; color: #444; font-size: 0.9rem; font-weight: 500; }
-.nav-link.activo { color: var(--morado-principal); background: #f3f0ff; padding: 8px 12px; border-radius: 8px; }
+/* NAVBAR */
+.nav-barra { 
+  background: white; 
+  height: 70px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 5%;
+  border-bottom: 1px solid #eee;
+}
+.nav-logo { display: flex; align-items: center; gap: 8px; color: var(--morado); text-decoration: none; font-weight: bold; font-size: 1.4rem; }
+.nav-enlaces { display: flex; align-items: center; gap: 20px; }
+.nav-link { text-decoration: none; color: #333; font-weight: 500; font-size: 0.9rem; }
+.nav-usuario-seccion { display: flex; align-items: center; gap: 12px; margin-left: 15px; border-left: 1px solid #eee; padding-left: 15px; }
+.nav-avatar-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--morado); }
 
-/* Hero Section (Captura 092715) */
-.hero-contenedor { background: linear-gradient(135deg, var(--morado-principal), var(--morado-oscuro)); color: white; padding: 60px 10%; border-radius: 0 0 50px 50px; display: grid; grid-template-cols: 1fr 1fr; gap: 40px; align-items: center; }
-.hero-titulo { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
-.hero-subtitulo { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
-.hero-botones { display: flex; gap: 15px; }
-.btn-blanco { background: white; color: var(--morado-principal); padding: 15px 30px; border-radius: 12px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; }
-.btn-transparente { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 15px 30px; border-radius: 12px; font-weight: bold; text-decoration: none; cursor: pointer; }
+/* HERO SECTION - El bloque morado */
+.hero-contenedor { 
+  background: linear-gradient(135deg, var(--morado), var(--morado-dark)) !important; 
+  color: white !important; 
+  padding: 80px 10%; 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 40px; 
+  align-items: center; 
+  border-radius: 0 0 50px 50px;
+}
+.hero-titulo { font-size: 3.5rem; line-height: 1.1; margin: 20px 0; font-weight: 800; color: white; }
+.hero-subtitulo { font-size: 1.1rem; opacity: 0.9; margin-bottom: 35px; color: #f3f0ff; }
+.btn-blanco { background: white; color: var(--morado); padding: 16px 28px; border-radius: 12px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; border: none; }
+.btn-transparente { background: rgba(255,255,255,0.15); border: 1px solid white; color: white; padding: 16px 28px; border-radius: 12px; font-weight: bold; text-decoration: none; margin-left: 15px; }
 
-/* Tarjetas de Reportes (Captura 092735) */
-.reportes-grid { display: grid; grid-template-cols: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 40px 10%; }
-.tarjeta-pet { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-.tarjeta-img { width: 100%; hieght: 200px; object-fit: cover; }
+/* IMÁGENES HERO */
+.hero-imagenes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.hero-imagenes-grid img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.img-offset { margin-top: 30px; }
+
+/* REPORTES RECIENTES */
+.recientes-header { padding: 50px 10% 20px 10%; display: flex; justify-content: space-between; align-items: flex-end; }
+.reportes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 0 10% 60px 10%; }
+.tarjeta-pet { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.tarjeta-img { width: 100%; height: 200px; object-fit: cover; }
 .tarjeta-cuerpo { padding: 20px; }
-.etiqueta { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: white; margin-bottom: 10px; display: inline-block; }
-.etiqueta.perdida { background: var(--rojo-alerta); }
-.etiqueta.encontrada { background: var(--verde-exito); }
+.etiqueta { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; color: white; text-transform: uppercase; }
+.etiqueta.perdida { background: #ef4444; }
+.etiqueta.encontrada { background: #10b981; }
 
-/* Formulario de Reporte (Capturas 092808 y 092821) */
+/* App.css - Estilos del Mapa */
+.mapa-pagina-container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  height: calc(100vh - 70px);
+  overflow: hidden;
+}
+
+.mapa-sidebar {
+  background: white;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.input-mapa-buscar {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.filtros-mapa-botones {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.btn-filtro {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background: #eee;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btn-filtro.activo { background: var(--morado); color: white; }
+
+.item-mapa-lista {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.area-visual-mapa {
+  background: #f0f2f5;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-mapa-interactivo {
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  z-index: 5;
+}
+
+.pin-flotante { position: absolute; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.p1 { top: 30%; left: 40%; }
+.p2 { top: 60%; left: 70%; }
+
+/* FORMULARIO DE REPORTE - Sanos y Salvos */
 .formulario-contenedor {
-  max-width: 800px;
+  max-width: 900px;
   margin: 40px auto;
   background: white;
   padding: 40px;
@@ -48,7 +139,7 @@ body { font-family: 'Inter', sans-serif; background-color: var(--fondo-gris); ma
   padding: 20px;
   border-radius: 16px;
   display: grid;
-  grid-template-cols: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
   margin-bottom: 30px;
 }
@@ -61,47 +152,82 @@ body { font-family: 'Inter', sans-serif; background-color: var(--fondo-gris); ma
   cursor: pointer;
   background: white;
   font-weight: 600;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
-.opcion-tipo.seleccionada-rojo { border-color: var(--rojo-alerta); background: #fef2f2; color: var(--rojo-alerta); }
-.opcion-tipo.seleccionada-verde { border-color: var(--verde-exito); background: #f0fdf4; color: var(--verde-exito); }
+.opcion-tipo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
 
-.grupo-input { margin-bottom: 20px; }
-.grupo-input label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #333; }
+/* Colores dinámicos para los selectores */
+.opcion-tipo.seleccionada-rojo { 
+  border-color: #ef4444; 
+  background: #fef2f2; 
+  color: #ef4444; 
+}
+.opcion-tipo.seleccionada-verde { 
+  border-color: #10b981; 
+  background: #f0fdf4; 
+  color: #10b981; 
+}
+
+.grupo-input { margin-bottom: 25px; }
+.grupo-input label { 
+  display: block; 
+  font-size: 0.9rem; 
+  font-weight: 600; 
+  margin-bottom: 8px; 
+  color: #333; 
+}
+
 .input-texto, .input-select, .input-area {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   box-sizing: border-box;
+  font-family: inherit;
+  background-color: #fff;
 }
 
-/* Página de Coincidencias (Captura 092849) */
-.coincidencia-card {
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+.input-texto:focus, .input-select:focus, .input-area:focus {
+  outline: none;
+  border-color: var(--morado);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
 }
 
-.coincidencia-header {
-  background: linear-gradient(to right, var(--morado-principal), #6366f1);
+.area-foto-upload {
+  grid-column: span 2;
+  text-align: center;
+  padding: 50px;
+  border: 2px dashed #ddd;
+  border-radius: 15px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.area-foto-upload:hover {
+  border-color: var(--morado);
+  background: #f5f3ff;
+}
+
+.btn-publicar {
+  grid-column: span 2;
+  background: var(--morado);
   color: white;
-  padding: 15px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 18px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
 }
 
-.comparativa-grid {
-  display: grid;
-  grid-template-cols: 1fr 1fr;
-  gap: 20px;
-  padding: 25px;
-  background: white;
+.btn-publicar:hover {
+  background: var(--morado-dark);
 }
-
-.lado-perdida { background: #fff1f2; border: 2px solid #fecaca; border-radius: 15px; padding: 15px; }
-.lado-encontrada { background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 15px; padding: 15px; }

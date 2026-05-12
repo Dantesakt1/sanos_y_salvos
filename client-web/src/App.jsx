@@ -7,6 +7,7 @@ import { Navbar } from './pages/Navbar';
 import { HomePage } from './pages/HomePage';
 import { ReportarPage } from './pages/ReportarPage';
 import { CoincidenciasPage } from './pages/CoincidenciasPage';
+import { MapaPage } from './pages/MapaPage';
 
 import './App.css';
 
@@ -23,18 +24,13 @@ function App() {
       <Navbar />
 
       <main>
-        {/* Sección de Login/Logout */}
-        <div style={{ textAlign: 'center', margin: '20px 0' }}>
-          {!isAuthenticated ? <LoginButton /> : <LogoutButton />}
-        </div>
-
-        {/* Sistema de Rutas Protegidas */}
         {isAuthenticated ? (
           <Routes>
             {/* Estas rutas deben coincidir con los "to" de tu Navbar */}
             <Route path="/" element={<HomePage />} />
             <Route path="/reportar" element={<ReportarPage />} />
             <Route path="/coincidencias" element={<CoincidenciasPage />} />
+            <Route path="/mapa" element={<MapaPage />} />
           </Routes>
         ) : (
           <div style={{ textAlign: 'center', marginTop: '40px' }}>

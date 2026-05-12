@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Camera, MapPin, Send } from 'lucide-react';
+import React, { useState } from 'react'; // <--- ESTO ES LO QUE FALTA
+import { Camera } from 'lucide-react';
 
 export function ReportarPage() {
   const [tipo, setTipo] = useState('perdida');
 
   return (
     <div className="formulario-contenedor">
-      <h1 style={{fontSize: '2rem', marginBottom: '10px'}}>Reportar Mascota</h1>
-      <p style={{color: '#666', marginBottom: '30px'}}>Completa los detalles para ayudarnos a encontrarla.</p>
+      <h1 className="titulo-form">Reportar Mascota</h1>
+      <p className="subtitulo-form">Completa los detalles para ayudarnos a encontrarla.</p>
 
       <div className="selector-tipo-reporte">
         <div 
@@ -43,12 +43,12 @@ export function ReportarPage() {
           <textarea className="input-area" rows="4" placeholder="Cualquier marca especial, collar, etc."></textarea>
         </div>
 
-        <div className="grupo-input" style={{gridColumn: 'span 2', textAlign: 'center', padding: '40px', border: '2px dashed #ccc', borderRadius: '15px'}}>
+        <div className="area-foto-upload">
           <Camera size={40} color="#999" />
           <p>Haz clic para subir una foto</p>
         </div>
 
-        <button type="button" className="btn-blanco" style={{gridColumn: 'span 2', background: 'var(--morado-principal)', color: 'white', fontSize: '1.2rem'}}>
+        <button type="button" className="btn-publicar">
           Publicar Reporte
         </button>
       </form>
