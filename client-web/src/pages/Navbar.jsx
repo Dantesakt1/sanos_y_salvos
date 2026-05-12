@@ -1,16 +1,22 @@
-import { Link } from 'react-router-dom';
+// src/pages/Navbar.jsx
+import { Link, useLocation } from 'react-router-dom';
+import { Heart, Map, Search, Bell, User } from 'lucide-react';
 
-const Navbar = () => {
+export function Navbar() {
+  const loc = useLocation();
+  const esActivo = (ruta) => loc.pathname === ruta ? "nav-link activo" : "nav-link";
+
   return (
-    <nav className="navbar">
-      <h1>Sanos y Salvos</h1>
-      <ul>
-        <li><Link to="/">Inicio (Menú)</Link></li>
-        <li><Link to="/listar">Listar Mascotas</Link></li>
-        <li><Link to="/formulario">Reportar Mascota</Link></li>
-      </ul>
+    <nav className="nav-barra">
+      <Link to="/" className="nav-logo">
+        <Heart fill="currentColor" /> Sanos y Salvos
+      </Link>
+      
+      <div className="nav-enlaces">
+        <Link to="/" className={esActivo('/')}>Inicio</Link>
+        <Link to="/reportar" className={esActivo('/reportar')}>Reportar Mascota</Link>
+        <Link to="/coincidencias" className={esActivo('/coincidencias')}><Search size={18}/> Coincidencias</Link>
+      </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
