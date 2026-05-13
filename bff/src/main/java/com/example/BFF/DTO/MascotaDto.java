@@ -13,5 +13,6 @@ public class MascotaDto {
     private Double longitud;
     private String descripcion;
     private Long usuarioId;
+    private String fotoUrl;
     
 }

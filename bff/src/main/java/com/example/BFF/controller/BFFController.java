@@ -15,31 +15,34 @@ import com.example.BFF.service.BFFService;
 @CrossOrigin(origins = "http://localhost:5173")
 public class BFFController {
 
-    private final RestClient restClient;
+    // Cambiamos a inyectar el Builder directamente
+    @Autowired
+    private RestClient.Builder loadBalancedRestClientBuilder;
 
     @Autowired
     private BFFService bffService;
 
-    // El constructor usa el Builder con LoadBalancer
-    public BFFController(RestClient.Builder resBuilderClient) {
-        this.restClient = resBuilderClient.baseUrl("http://gestion-animales").build();
-    }
-
     @GetMapping("/mascotas-cercanas")
     public List<ReporteDetalladoDto> getMascotas() {
-        // Seguimos usando el Service para la lógica pesada (orquestación)
         return bffService.obtenerMascotaConDistancia(-33.45, -70.66);
     }
 
     @PostMapping("/reportar")
     public MascotaDto crearReporte(@RequestBody MascotaDto mascota) {
-        // Opción usando RestClient (como quiere el profe):
-        // Esto se salta la interfaz y va directo al microservicio
-        return restClient.post()
-                .uri("/api/mascotas")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(mascota)
-                .retrieve()
-                .body(MascotaDto.class);
+        System.out.println("Enviando reporte de: " + mascota.getNombre() + " al puerto 8081");
+
+        try {
+            // CAMBIAMOS EL HOST POR LOCALHOST:8081
+            return loadBalancedRestClientBuilder.build()
+                    .post()
+                    .uri("http://localhost:8081/api/mascotas") // <--- IP y Puerto directo
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(mascota)
+                    .retrieve()
+                    .body(MascotaDto.class);
+        } catch (Exception e) {
+            System.err.println("ERROR CRÍTICO: " + e.getMessage());
+            throw e;
+        }
     }
 }

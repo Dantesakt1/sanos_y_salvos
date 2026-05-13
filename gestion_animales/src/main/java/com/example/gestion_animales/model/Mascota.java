@@ -25,4 +25,5 @@ public class Mascota {
     private Double longitud;
     private String descripcion;
     private Long usuarioId;
+    private String fotoUrl;
 }
