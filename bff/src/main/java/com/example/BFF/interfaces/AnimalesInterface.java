@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.BFF.DTO.MascotaDto;
 
-@FeignClient(name = "gestion-animales", url = "http://localhost:8081")
+@FeignClient(name = "gestion-animales")
 public interface AnimalesInterface {
 
     @GetMapping("/api/mascotas")
