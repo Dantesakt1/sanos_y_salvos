@@ -25,27 +25,34 @@ public class BFFService implements IBFFService {
     @CircuitBreaker(name = "bffCircuit", fallbackMethod = "fallbackDetalle")
     @Override
     public List<ReporteDetalladoDto> obtenerMascotaConDistancia(double latUser, double lonUser) {
-        // 1. Obtenemos la lista base de mascotas
+        // 1. Log para ver si llegan mascotas de gestion-animales
         List<MascotaDto> mascotas = animalesInterface.listarMascotas();
+        System.out.println("Mascotas encontradas en DB: " + mascotas.size());
 
         return mascotas.stream().map(m -> {
-            // 2. Buscamos al usuario de forma segura
-            UsuarioDto user = null;
+            // Inicializamos valores por defecto por si fallan los otros servicios
+            String nombreContacto = "Contacto no disponible";
+            String telfContacto = "Sin teléfono";
+            Double distancia = 0.0;
+
+            // Intentar obtener usuario
             try {
-                user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
+                UsuarioDto user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
+                if (user != null) {
+                    nombreContacto = user.getNombre() + " " + user.getApellido();
+                    telfContacto = user.getTelefono();
+                }
             } catch (Exception e) {
-                System.err.println("No se pudo obtener el usuario " + m.getUsuarioId());
+                System.err.println("Error al buscar usuario " + m.getUsuarioId() + ": " + e.getMessage());
             }
 
-            // 3. Obtenemos la distancia (con valor por defecto si falla)
-            Double distancia = 0.0;
+            // Intentar obtener distancia
             try {
                 distancia = geolocalizacionInterface.obtenerDistancia(latUser, lonUser, m.getLatitud(), m.getLongitud());
             } catch (Exception e) {
-                System.err.println("Error calculando distancia para mascota " + m.getId());
+                System.err.println("Error en geolocalización: " + e.getMessage());
             }
 
-            // 4. Construimos el DTO validando que el usuario no sea NULL
             return ReporteDetalladoDto.builder()
                     .mascotaId(m.getId())
                     .nombreMascota(m.getNombre())
@@ -54,10 +61,9 @@ public class BFFService implements IBFFService {
                     .descripcion(m.getDescripcion())
                     .latitud(m.getLatitud())
                     .longitud(m.getLongitud())
-                    // Si el usuario existe, ponemos su nombre; si no, un texto genérico
-                    .contactoNombre(user != null ? user.getNombre() + " " + user.getApellido() : "Contacto no disponible")
-                    .contactoTelefono(user != null ? user.getTelefono() : "Sin teléfono")
-                    .distanciaKm(distancia)
+                    .contactoNombre(nombreContacto)
+                    .contactoTelefono(telfContacto)
+                    .distanciaKm(distancia != null ? distancia : 0.0)
                     .build();
         }).collect(Collectors.toList());
     }

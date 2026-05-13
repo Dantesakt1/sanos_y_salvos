@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Clock } from 'lucide-react';
+import { ArrowRight, MapPin, Loader2 } from 'lucide-react';
+import { useAuth0 } from "@auth0/auth0-react";
+import { bffApi } from "../components/api";
 
 export function HomePage() {
-  const recientes = [
-    { id: 1, nombre: 'Max', tipo: 'perdida', raza: 'Golden Retriever', ubicacion: 'Las Condes, Santiago', tiempo: '2 horas', img: 'https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=400' },
-    { id: 2, nombre: 'Desconocido', tipo: 'encontrada', raza: 'Siamés', ubicacion: 'Providencia, Santiago', tiempo: '5 horas', img: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400' },
-    { id: 3, nombre: 'Luna', tipo: 'perdida', raza: 'Persa', ubicacion: 'Vitacura, Santiago', tiempo: '1 día', img: 'https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=400' },
-    { id: 4, nombre: 'Rocky', tipo: 'encontrada', raza: 'Pastor Alemán', ubicacion: 'Ñuñoa, Santiago', tiempo: '3 horas', img: 'https://images.unsplash.com/photo-1568572933382-74d440642117?w=400' }
-  ];
+  const [reportes, setReportes] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+
+  useEffect(() => {
+    const fetchReportes = async () => {
+      try {
+        // Solo intentamos cargar si el usuario está autenticado (por el Token)
+        if (isAuthenticated) {
+          const data = await bffApi.getMascotasCercanas(getAccessTokenSilently);
+          setReportes(data);
+        }
+      } catch (error) {
+        console.error("Error cargando mascotas del BFF:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    fetchReportes();
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   return (
     <div className="home-wrapper">
-      {/* BLOQUE MORADO */}
+      {/* BLOQUE MORADO - Hero section se mantiene igual */}
       <section className="hero-contenedor">
         <div className="hero-info">
           <p className="hero-badge">🐾 PLATAFORMA INTELIGENTE DE MASCOTAS</p>
@@ -32,7 +49,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECCIÓN REPORTES */}
+      {/* SECCIÓN REPORTES DINÁMICOS */}
       <section className="recientes-wrapper">
         <div className="recientes-header">
           <div>
@@ -42,28 +59,49 @@ export function HomePage() {
           <Link to="/mapa" style={{color: 'var(--morado)', fontWeight: 'bold', textDecoration: 'none'}}>Ver en el Mapa →</Link>
         </div>
 
-        <div className="reportes-grid">
-          {recientes.map(pet => (
-            <div key={pet.id} className="tarjeta-pet">
-              <div style={{ position: 'relative' }}>
-                <img src={pet.img} className="tarjeta-img" alt={pet.nombre} />
-                <span className={`etiqueta ${pet.tipo}`} style={{ position: 'absolute', top: '15px', left: '15px' }}>
-                  {pet.tipo}
-                </span>
-              </div>
-              <div className="tarjeta-cuerpo">
-                <h3 style={{margin: '0 0 5px 0'}}>{pet.nombre}</h3>
-                <p style={{color: '#888', fontSize: '0.8rem', margin: '0 0 15px 0'}}>{pet.raza}</p>
-                <div style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#666', marginBottom: '15px'}}>
-                  <MapPin size={14}/> {pet.ubicacion}
+        {cargando ? (
+          <div style={{display: 'flex', justifyContent: 'center', padding: '50px'}}>
+            <Loader2 className="animate-spin" size={40} color="var(--morado)" />
+          </div>
+        ) : (
+          <div className="reportes-grid">
+            {reportes.length > 0 ? (
+              reportes.map(pet => (
+                <div key={pet.mascotaId} className="tarjeta-pet">
+                  <div style={{ position: 'relative' }}>
+                    {/* Usamos una imagen por defecto si el backend no trae una aún */}
+                    <img 
+                      src={pet.img || 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400'} 
+                      className="tarjeta-img" 
+                      alt={pet.nombreMascota} 
+                    />
+                    <span className={`etiqueta ${pet.estado}`} style={{ position: 'absolute', top: '15px', left: '15px' }}>
+                      {pet.estado}
+                    </span>
+                  </div>
+                  <div className="tarjeta-cuerpo">
+                    <h3 style={{margin: '0 0 5px 0'}}>{pet.nombreMascota}</h3>
+                    <p style={{color: '#888', fontSize: '0.8rem', margin: '0 0 15px 0'}}>{pet.especie}</p>
+                    
+                    <div style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#666', marginBottom: '5px'}}>
+                      <MapPin size={14}/> A {pet.distanciaKm.toFixed(1)} km de ti
+                    </div>
+
+                    <p style={{fontSize: '0.75rem', color: '#999', marginBottom: '15px'}}>
+                      Contacto: {pet.contactoNombre}
+                    </p>
+
+                    <button style={{width: '100%', background: 'var(--morado)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'}}>
+                      Ver Detalles
+                    </button>
+                  </div>
                 </div>
-                <button style={{width: '100%', background: 'var(--morado)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'}}>
-                  Ver Detalles
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))
+            ) : (
+              <p style={{textAlign: 'center', gridColumn: 'span 3', color: '#666'}}>No hay reportes cercanos en este momento.</p>
+            )}
+          </div>
+        )}
       </section>
     </div>
   );
