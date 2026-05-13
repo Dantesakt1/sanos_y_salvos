@@ -77,4 +77,10 @@ public class BFFService implements IBFFService {
     public MascotaDto registrarReporteCompleto(MascotaDto mascota) {
         return animalesInterface.grabarMascota(mascota);
     }
+
+    @Override
+    public List<MascotaDto> obtenerMisReportes(String usuarioId) {
+        // Llamada directa al microservicio filtrada por usuario
+        return animalesInterface.listarPorUsuario(usuarioId);
+    }
 }

@@ -18,6 +18,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -82,5 +83,10 @@ public class MascotaController {
     public List<Mascota> buscarCompatibles(@RequestParam String especie, @RequestParam String estado) {
         System.out.println("Buscando candidatos: " + especie + " - " + estado);
         return mascotaRepository.findByEspecieAndEstado(especie, estado);
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Mascota> listarPorUsuario(@PathVariable Long usuarioId) {
+        return mascotaRepository.findByUsuarioId(usuarioId);
     }
 }

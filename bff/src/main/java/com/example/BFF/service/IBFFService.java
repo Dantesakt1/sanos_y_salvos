@@ -10,4 +10,6 @@ public interface IBFFService {
 
     // Método para registrar una mascota (reporte)
     MascotaDto registrarReporteCompleto(MascotaDto mascota);
+
+    List<MascotaDto> obtenerMisReportes(String usuarioId);
 }

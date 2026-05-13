@@ -10,4 +10,5 @@ import com.example.gestion_animales.model.Mascota;
 @Repository
 public interface MascotaRepository extends JpaRepository<Mascota, Long> {
     List<Mascota> findByEspecieAndEstado(String especie, String estado);
+    List<Mascota> findByUsuarioId(Long usuarioId);
 }

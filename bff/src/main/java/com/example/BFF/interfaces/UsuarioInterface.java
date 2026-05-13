@@ -11,5 +11,5 @@ import com.example.BFF.config.FeignConfig;
 public interface UsuarioInterface {
 
     @GetMapping("/api/usuarios/{id}")
-    UsuarioDto obtenerUsuarioPorId(@PathVariable("id") Long id);
+    UsuarioDto obtenerUsuarioPorId(@PathVariable("id") String id);
 }

@@ -26,4 +26,9 @@ public class BFFController {
         // Usamos el service que ya usa Feign (el cual sí conoce a "gestion-animales")
         return bffService.registrarReporteCompleto(mascota);
     }
+
+    @GetMapping("/mis-reportes/{usuarioId}")
+    public List<MascotaDto> getMisReportes(@PathVariable String usuarioId) {
+        return bffService.obtenerMisReportes(usuarioId);
+    }
 }
