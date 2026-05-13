@@ -31,7 +31,14 @@
         <spring-cloud.version>2025.1.1</spring-cloud.version>
     </properties>
         <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            </dependency>
+
             <!-- Starter Web: Necesario para RestController y RestClient -->
+            
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>

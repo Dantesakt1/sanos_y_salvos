@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.BFF.DTO.MascotaDto;
+import com.example.BFF.config.FeignConfig;
 
-@FeignClient(name = "gestion-animales")
+@FeignClient(name = "gestion-animales", configuration = FeignConfig.class)
 public interface AnimalesInterface {
 
     @GetMapping("/api/mascotas")
