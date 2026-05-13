@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
+import org.springframework.http.MediaType;
 
 import com.example.BFF.DTO.MascotaDto;
 import com.example.BFF.DTO.ReporteDetalladoDto;
@@ -16,21 +17,29 @@ public class BFFController {
 
     private final RestClient restClient;
 
-    public BFFController(RestClient.Builder resBuilderClient) {
-        restClient = resBuilderClient.build();
-    }
-
     @Autowired
     private BFFService bffService;
 
-    @GetMapping("/mascotas-cercanas")
-    public List<ReporteDetalladoDto> getMascotas() {
-        return bffService.obtenerMascotaConDistancia(-33.45, -70.66); // ejemplo: Santiago
+    // El constructor usa el Builder con LoadBalancer
+    public BFFController(RestClient.Builder resBuilderClient) {
+        this.restClient = resBuilderClient.baseUrl("http://gestion-animales").build();
     }
 
-   @PostMapping("/reportar")
-     public MascotaDto crearReporte(@RequestBody MascotaDto mascota) {
-    return bffService.registrarReporteCompleto(mascota);
-    }    
+    @GetMapping("/mascotas-cercanas")
+    public List<ReporteDetalladoDto> getMascotas() {
+        // Seguimos usando el Service para la lógica pesada (orquestación)
+        return bffService.obtenerMascotaConDistancia(-33.45, -70.66);
+    }
 
+    @PostMapping("/reportar")
+    public MascotaDto crearReporte(@RequestBody MascotaDto mascota) {
+        // Opción usando RestClient (como quiere el profe):
+        // Esto se salta la interfaz y va directo al microservicio
+        return restClient.post()
+                .uri("/api/mascotas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(mascota)
+                .retrieve()
+                .body(MascotaDto.class);
+    }
 }
