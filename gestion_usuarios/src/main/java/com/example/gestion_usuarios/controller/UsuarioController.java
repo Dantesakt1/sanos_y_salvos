@@ -53,14 +53,14 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @CircuitBreaker(name = "dbUsuarios", fallbackMethod = "fallbackBuscarPorId")
-    public Usuario obtenerPorId(@PathVariable Long id) {
+    public Usuario obtenerPorId(@PathVariable String id) {
         System.out.println("Buscando usuario con ID: " + id);
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
     // fallback por si la DB falla
-    public Usuario fallbackBuscarPorId(Long id, Throwable e) {
+    public Usuario fallbackBuscarPorId(String id, Throwable e) {
         System.err.println("Error al buscar usuario " + id + ": " + e.getMessage());
         Usuario errorUser = new Usuario();
         errorUser.setNombre("Usuario no disponible");

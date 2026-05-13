@@ -43,9 +43,9 @@ class UsuarioControllerTest {
     // --- TEST 2: PERMIT ALL ---
     @Test
     void obtenerPorId_DebeFuncionar_SinToken() throws Exception {
-        Usuario mockUser = new Usuario(10L, "Juan", "Perez", "juan@mail.com", "123", "Calle 1", "Stgo");
+        Usuario mockUser = new Usuario("10L", "Juan", "Perez", "juan@mail.com", "123", "Calle 1", "Stgo");
 
-        when(usuarioRepository.findById(10L)).thenReturn(Optional.of(mockUser));
+        when(usuarioRepository.findById("10L")).thenReturn(Optional.of(mockUser));
 
         mockMvc.perform(get("/api/usuarios/10"))
                 .andExpect(status().isOk())
@@ -57,7 +57,7 @@ class UsuarioControllerTest {
     @WithMockUser
     void grabar_DebeGuardar_CuandoEstaAutenticado() throws Exception {
         Usuario nuevo = new Usuario(null, "Ana", "Díaz", "ana@mail.com", "456", "Calle 2", "Stgo");
-        Usuario guardado = new Usuario(1L, "Ana", "Díaz", "ana@mail.com", "456", "Calle 2", "Stgo");
+        Usuario guardado = new Usuario("1L", "Ana", "Díaz", "ana@mail.com", "456", "Calle 2", "Stgo");
 
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(guardado);
 

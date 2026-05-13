@@ -9,5 +9,5 @@ import com.example.demo.model.UsuarioDTO;
 public interface UsuarioClient {
 
     @GetMapping("/api/usuarios/{id}")
-    UsuarioDTO obtenerUsuarioPorId(@PathVariable("id") Long id);
+    UsuarioDTO obtenerUsuarioPorId(@PathVariable("id") String id);
 }

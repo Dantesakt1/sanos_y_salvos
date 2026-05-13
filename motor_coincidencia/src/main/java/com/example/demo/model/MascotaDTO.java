@@ -17,5 +17,5 @@ public class MascotaDTO {
     private Double latitud;
     private Double longitud;
     private String descripcion;
-    private Long usuarioId;
+    private String usuarioId;
 }
