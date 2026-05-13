@@ -20,8 +20,8 @@ export function ReportarPage() {
     descripcion: '',
     latitud: null,
     longitud: null,
-    fotoUrl: '', // <--- Nuevo atributo sincronizado
-    usuarioId: 1 
+    fotoUrl: '', 
+    usuarioId: '' // Ahora es un String para Auth0
   });
 
   const handleChange = (e) => {
@@ -34,7 +34,6 @@ export function ReportarPage() {
     if (file) {
       const urlTemporal = URL.createObjectURL(file);
       setPreview(urlTemporal);
-      // Guardamos la URL temporal en el campo fotoUrl para el backend
       setFormData(prev => ({ ...prev, fotoUrl: urlTemporal }));
     }
   };
@@ -52,34 +51,42 @@ export function ReportarPage() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  // Convertimos explícitamente a los tipos que espera Java
-  const mascotaParaEnviar = {
-    ...formData,
-    latitud: parseFloat(formData.latitud),
-    longitud: parseFloat(formData.longitud),
-    usuarioId: parseInt(formData.usuarioId) // Forzamos que sea un número
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validación de seguridad por si Auth0 no ha cargado el user aún
+    if (!user?.sub) {
+        alert("Debes estar iniciado sesión para reportar.");
+        return;
+    }
 
-  setEnviando(true);
-  try {
-    const resultado = await bffApi.postReporte(getAccessTokenSilently, mascotaParaEnviar);
-    alert("¡Mascota reportada con éxito!");
-    navigate('/');
-  } catch (error) {
-    console.error("Error al publicar:", error);
-    alert("Error 500: Revisa la terminal del BFF para ver el error de Java");
-  } finally {
-    setEnviando(false);
-  }
-};
+    setEnviando(true);
+
+    // Objeto final con tipos de datos corregidos y el ID de Auth0 real
+    const mascotaParaEnviar = {
+      ...formData,
+      latitud: formData.latitud ? parseFloat(formData.latitud) : null,
+      longitud: formData.longitud ? parseFloat(formData.longitud) : null,
+      usuarioId: user.sub // <--- Enviamos el String de Auth0 (ej: auth0|65f...)
+    };
+
+    try {
+      const resultado = await bffApi.postReporte(getAccessTokenSilently, mascotaParaEnviar);
+      console.log("Mascota guardada con ID de Auth0:", user.sub);
+      alert("¡Mascota reportada con éxito!");
+      navigate('/');
+    } catch (error) {
+      console.error("Error al publicar:", error);
+      alert("Error 500: Verifica que la columna usuario_id sea VARCHAR en la DB.");
+    } finally {
+      setEnviando(false);
+    }
+  };
 
   return (
     <div className="formulario-contenedor">
       <h1 className="titulo-form">Reportar Mascota</h1>
-      <p className="subtitulo-form">Completa los detalles para ayudarnos a encontrarla.</p>
+      <p className="subtitulo-form">Hola {user?.nickname}, completa los detalles para el reporte.</p>
 
       <div className="selector-tipo-reporte">
         <div 
@@ -128,7 +135,6 @@ const handleSubmit = async (e) => {
           </button>
         </div>
 
-        {/* ÁREA DE FOTO ACTUALIZADA */}
         <div className="grupo-input" style={{gridColumn: 'span 2'}}>
           <label>Foto de la Mascota</label>
           <div 
@@ -136,13 +142,7 @@ const handleSubmit = async (e) => {
             onClick={() => fileInputRef.current.click()}
             style={{ cursor: 'pointer', position: 'relative', minHeight: '150px', border: '2px dashed #ccc', borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
           >
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              style={{ display: 'none' }} 
-              accept="image/*" 
-              onChange={handleFileChange} 
-            />
+            <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleFileChange} />
             
             {preview ? (
               <>
