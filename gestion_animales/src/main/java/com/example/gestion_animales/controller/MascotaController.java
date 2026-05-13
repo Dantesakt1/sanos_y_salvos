@@ -86,7 +86,7 @@ public class MascotaController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public List<Mascota> listarPorUsuario(@PathVariable Long usuarioId) {
+    public List<Mascota> listarPorUsuario(@PathVariable String usuarioId) {
         return mascotaRepository.findByUsuarioId(usuarioId);
     }
 }
