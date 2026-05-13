@@ -18,3 +18,4 @@ public interface AnimalesClient {
     @PostMapping("/api/mascotas")
     MascotaDto grabarMascota(@RequestBody MascotaDto mascota);
 }
+    

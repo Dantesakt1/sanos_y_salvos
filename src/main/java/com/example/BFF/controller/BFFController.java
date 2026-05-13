@@ -1,17 +1,12 @@
 package com.example.BFF.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.example.BFF.DTO.MascotaDto;
+import com.example.BFF.DTO.ReporteDetalladoDto;
 import com.example.BFF.service.BFFService;
-
 
 @RestController
 @RequestMapping("/api/bff")
@@ -22,13 +17,13 @@ public class BFFController {
     private BFFService bffService;
 
     @GetMapping("/mascotas-cercanas")
-    public List<Object> getMascotas(){
-        return  bffService.obtenerMascotaConDistancia(0,0);
+    public List<ReporteDetalladoDto> getMascotas() {
+        return bffService.obtenerMascotaConDistancia(-33.45, -70.66); // ejemplo: Santiago
     }
 
-    @PostMapping("/reportar")
-    public Object crearReporte(@RequestBody Object mascota){
-        return bffService.registrarReporteCompleto(mascota);
-    }
-    
+   @PostMapping("/reportar")
+     public MascotaDto crearReporte(@RequestBody MascotaDto mascota) {
+    return bffService.registrarReporteCompleto(mascota);
+    }    
+
 }
