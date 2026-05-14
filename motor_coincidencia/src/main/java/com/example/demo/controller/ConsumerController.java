@@ -36,33 +36,40 @@ public class ConsumerController {
         System.out.println("====== MOTOR DE COINCIDENCIAS: ANALIZANDO '" + mascotaNueva.getNombre() + "' ======");
 
         try {
-            // FILTRO 1 y 2: Misma especie y estado opuesto
-            String estadoABuscar = mascotaNueva.getEstado().equalsIgnoreCase("PERDIDO") ? "ENCONTRADO" : "PERDIDO";
+            String estadoActual = mascotaNueva.getEstado().toLowerCase();
+            String estadoABuscar = estadoActual.contains("perdid") ? "encontrada" : "perdida";
+            
+            // MICRÓFONO 1: ¿Qué está a punto de buscar?
+            System.out.println("=> Buscando en BD: Especie=" + mascotaNueva.getEspecie() + ", Estado=" + estadoABuscar);
             
             List<MascotaDTO> candidatos = mascotaClient.obtenerMascotasCompatibles(
                 mascotaNueva.getEspecie(), 
                 estadoABuscar
             );
 
+            // MICRÓFONO 2: ¿Cuántos encontró Gestión Animales?
+            System.out.println("=> Candidatos traídos por Feign: " + (candidatos != null ? candidatos.size() : 0));
+
             for (MascotaDTO candidato : candidatos) {
-                
-                // FILTRO 3: Seguridad - No comparar con publicaciones del mismo usuario
                 if (candidato.getUsuarioId().equals(mascotaNueva.getUsuarioId())) {
+                    System.out.println("=> Se ignoró al candidato " + candidato.getId() + " porque es del mismo usuario.");
                     continue; 
                 }
 
-                // FILTRO 4: Distancia vía Feign (Microservicio 8083)
+                // MICRÓFONO 3: ¿Qué distancia calculó?
                 double kms = geoClient.obtenerDistancia(
                     mascotaNueva.getLatitud(), mascotaNueva.getLongitud(),
                     candidato.getLatitud(), candidato.getLongitud()
                 );
+                System.out.println("=> Distancia calculada con candidato " + candidato.getId() + ": " + kms + " km");
 
                 if (kms <= 5.0) { // Radio de 5 kilómetros
                     
-                    // Si llegamos aquí, ¡HAY MATCH!
+                    // ¡HAY MATCH!
                     Coincidencia match = new Coincidencia();
                     
-                    if (mascotaNueva.getEstado().equalsIgnoreCase("PERDIDO")) {
+                    // Asignar IDs correctamente independientemente del género de la palabra
+                    if (estadoActual.contains("perdid")) {
                         match.setMascotaPerdidaId(mascotaNueva.getId());
                         match.setMascotaEncontradaId(candidato.getId());
                     } else {
@@ -70,15 +77,20 @@ public class ConsumerController {
                         match.setMascotaEncontradaId(mascotaNueva.getId());
                     }
 
-                    match.setPorcentajeSimilitud(90.0); // Similitud base por especie/distancia
+                    match.setPorcentajeSimilitud(90.0);
                     match.setFechaCruce(LocalDateTime.now());
 
                     coincidenciaRepository.save(match);
 
-                    // OBTENER CONTACTOS PARA EL LOG/AVISO
-                    UsuarioDTO contacto = usuarioClient.obtenerUsuarioPorId(candidato.getUsuarioId());
+                    // LOG DE ÉXITO
                     System.out.println("!!! MATCH DETECTADO a " + kms + " km !!!");
-                    System.out.println("Contactar a: " + contacto.getNombre() + " (" + contacto.getTelefono() + ")");
+                    
+                    try {
+                        UsuarioDTO contacto = usuarioClient.obtenerUsuarioPorId(candidato.getUsuarioId());
+                        System.out.println("Contactar a: " + contacto.getNombre() + " (" + contacto.getTelefono() + ")");
+                    } catch (Exception ex) {
+                        System.out.println("Match guardado, pero no se pudo obtener info del contacto en este momento.");
+                    }
                 }
             }
             
