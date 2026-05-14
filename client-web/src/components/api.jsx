@@ -63,4 +63,18 @@ export const bffApi = {
     }
     return response.json();
   },
+
+    getCoincidencias: async (getToken, mascotaId) => {
+    const token = await getToken();
+    // Verifica que NO diga /api/bff/api/bff
+    const response = await fetch(`${BASE_URL}/coincidencias/mascota/${mascotaId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Error en el motor');
+    return response.json();
+  }
 };

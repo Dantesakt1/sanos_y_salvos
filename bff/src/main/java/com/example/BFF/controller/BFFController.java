@@ -39,7 +39,7 @@ public class BFFController {
     }
 
     @GetMapping("/coincidencias/mascota/{id}")
-        public List<CoincidenciaDto> getCoincidencias(@PathVariable Long id) {
+        public List<CoincidenciaDto> getCoincidencias(@PathVariable("id") Long id) {
             // Aquí le pedimos al micro 8084 los datos que guardó el ConsumerController
             return coincidenciaInter.obtenerPorMascota(id);
         }

@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
-import { LoginButton, LogoutButton } from './components/LoginLogout'; 
 
-// Importaciones corregidas
+// Importaciones
 import { Navbar } from './pages/Navbar';
 import { HomePage } from './pages/HomePage';
 import { ReportarPage } from './pages/ReportarPage';
@@ -21,16 +20,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* El Navbar debe estar siempre visible */}
       <Navbar />
 
       <main>
         {isAuthenticated ? (
           <Routes>
-            {/* Estas rutas deben coincidir con los "to" de tu Navbar */}
             <Route path="/" element={<HomePage />} />
             <Route path="/reportar" element={<ReportarPage />} />
             <Route path="/coincidencias" element={<CoincidenciasPage />} />
+            <Route path="/coincidencias/:idMascota" element={<CoincidenciasPage />} />
             <Route path="/mapa" element={<MapaPage />} />
             <Route path="/mis-reportes" element={<MisReportesPage />} />
           </Routes>
