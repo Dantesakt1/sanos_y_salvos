@@ -12,7 +12,6 @@ export function HomePage() {
   useEffect(() => {
     const fetchReportes = async () => {
       try {
-        // Solo intentamos cargar si el usuario está autenticado (por el Token)
         if (isAuthenticated) {
           const data = await bffApi.getMascotasCercanas(getAccessTokenSilently);
           setReportes(data);
@@ -29,7 +28,6 @@ export function HomePage() {
 
   return (
     <div className="home-wrapper">
-      {/* BLOQUE MORADO - Hero section se mantiene igual */}
       <section className="hero-contenedor">
         <div className="hero-info">
           <p className="hero-badge">🐾 PLATAFORMA INTELIGENTE DE MASCOTAS</p>
@@ -49,7 +47,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECCIÓN REPORTES DINÁMICOS */}
       <section className="recientes-wrapper">
         <div className="recientes-header">
           <div>
@@ -69,14 +66,25 @@ export function HomePage() {
               reportes.map(pet => (
                 <div key={pet.mascotaId} className="tarjeta-pet">
                   <div style={{ position: 'relative' }}>
-                    {/* Usamos una imagen por defecto si el backend no trae una aún */}
+                    
+                    {/* LA MAGIA DE LA IMAGEN OCURRE AQUÍ */}
                     <img 
-                      src={pet.img || 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400'} 
+                      src={pet.fotoUrl || (pet.especie === 'Gato' 
+                        ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                        : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400')} 
                       className="tarjeta-img" 
                       alt={pet.nombreMascota} 
+                      onError={(e) => {
+                        e.target.onerror = null; // Previene bucles
+                        e.target.src = pet.especie === 'Gato' 
+                          ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                          : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400';
+                      }}
+                      style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '15px 15px 0 0' }}
                     />
+
                     <span className={`etiqueta ${pet.estado}`} style={{ position: 'absolute', top: '15px', left: '15px' }}>
-                      {pet.estado}
+                      {pet.estado.toUpperCase()}
                     </span>
                   </div>
                   <div className="tarjeta-cuerpo">

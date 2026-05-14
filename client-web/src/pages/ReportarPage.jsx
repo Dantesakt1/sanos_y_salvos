@@ -11,6 +11,7 @@ export function ReportarPage() {
   
   const [enviando, setEnviando] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [imagenFile, setImagenFile] = useState(null); // NUEVO: Guardamos el archivo real
   
   const [formData, setFormData] = useState({
     nombre: '',
@@ -21,7 +22,7 @@ export function ReportarPage() {
     latitud: null,
     longitud: null,
     fotoUrl: '', 
-    usuarioId: '' // Ahora es un String para Auth0
+    usuarioId: '' 
   });
 
   const handleChange = (e) => {
@@ -32,9 +33,9 @@ export function ReportarPage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setImagenFile(file); // Guardamos la foto para mandarla a Cloudinary luego
       const urlTemporal = URL.createObjectURL(file);
-      setPreview(urlTemporal);
-      setFormData(prev => ({ ...prev, fotoUrl: urlTemporal }));
+      setPreview(urlTemporal); // Solo para mostrarla en la pantalla mientras tanto
     }
   };
 
@@ -54,30 +55,53 @@ export function ReportarPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validación de seguridad por si Auth0 no ha cargado el user aún
     if (!user?.sub) {
         alert("Debes estar iniciado sesión para reportar.");
         return;
     }
 
     setEnviando(true);
+    let fotoUrlNube = '';
 
-    // Objeto final con tipos de datos corregidos y el ID de Auth0 real
+    // --- NUEVA LÓGICA DE CLOUDINARY ---
+    if (imagenFile) {
+      const formCloudinary = new FormData();
+      formCloudinary.append("file", imagenFile);
+      // REEMPLAZA ESTO CON EL NOMBRE DE TU PRESET UNSIGNED
+      formCloudinary.append("upload_preset", "sanos_y_salvos"); 
+      
+      try {
+        // REEMPLAZA "TU_CLOUD_NAME" CON TU DATO REAL
+        const resCloudinary = await fetch("https://api.cloudinary.com/v1_1/ddjllde8k/image/upload", {
+          method: "POST",
+          body: formCloudinary,
+        });
+
+        const dataCloudinary = await resCloudinary.json();
+        fotoUrlNube = dataCloudinary.secure_url; // ¡Esta es la URL real de internet!
+        console.log("Foto subida a Cloudinary:", fotoUrlNube);
+      } catch (err) {
+        console.error("Error subiendo foto a Cloudinary", err);
+        alert("Hubo un problema subiendo la foto, pero publicaremos el reporte sin ella.");
+      }
+    }
+
+    // Objeto final con la URL de Cloudinary (si existe)
     const mascotaParaEnviar = {
       ...formData,
+      fotoUrl: fotoUrlNube, // Asignamos la URL real
       latitud: formData.latitud ? parseFloat(formData.latitud) : null,
       longitud: formData.longitud ? parseFloat(formData.longitud) : null,
-      usuarioId: user.sub // <--- Enviamos el String de Auth0 (ej: auth0|65f...)
+      usuarioId: user.sub 
     };
 
     try {
-      const resultado = await bffApi.postReporte(getAccessTokenSilently, mascotaParaEnviar);
-      console.log("Mascota guardada con ID de Auth0:", user.sub);
+      await bffApi.postReporte(getAccessTokenSilently, mascotaParaEnviar);
       alert("¡Mascota reportada con éxito!");
       navigate('/');
     } catch (error) {
-      console.error("Error al publicar:", error);
-      alert("Error 500: Verifica que la columna usuario_id sea VARCHAR en la DB.");
+      console.error("Error al publicar en backend:", error);
+      alert("Error publicando en la base de datos.");
     } finally {
       setEnviando(false);
     }
@@ -149,7 +173,11 @@ export function ReportarPage() {
                 <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <button 
                   type="button" 
-                  onClick={(e) => { e.stopPropagation(); setPreview(null); setFormData(p => ({...p, fotoUrl: ''})) }}
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    setPreview(null); 
+                    setImagenFile(null); // Limpiamos la imagen real también
+                  }}
                   style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', padding: '5px', color: 'white' }}
                 >
                   <X size={16} />
@@ -165,7 +193,7 @@ export function ReportarPage() {
         </div>
 
         <button type="submit" className="btn-publicar" disabled={enviando} style={{opacity: enviando ? 0.7 : 1, gridColumn: 'span 2'}}>
-          {enviando ? <><Loader2 className="animate-spin" size={20} /> Publicando...</> : 'Publicar Reporte'}
+          {enviando ? <><Loader2 className="animate-spin" size={20} /> Procesando...</> : 'Publicar Reporte'}
         </button>
       </form>
     </div>

@@ -23,4 +23,10 @@ public class CoincidenciaQueryController {
                 .filter(c -> c.getMascotaPerdidaId().equals(id) || c.getMascotaEncontradaId().equals(id))
                 .toList();
     }
+
+    @GetMapping
+    public List<Coincidencia> obtenerTodasLasCoincidencias() {
+        // Devuelve todos los matches que el Motor ha detectado en la historia
+        return repository.findAll();
+    }
 }

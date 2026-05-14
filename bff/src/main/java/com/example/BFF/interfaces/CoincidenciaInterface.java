@@ -13,4 +13,7 @@ public interface CoincidenciaInterface {
 
     @GetMapping("/api/coincidencias/mascota/{id}")
         List<CoincidenciaDto> obtenerPorMascota(@PathVariable("id") Long id);
+    
+    @GetMapping("/api/coincidencias") // Sin el /mascota/{id}
+        List<CoincidenciaDto> obtenerTodas();
 }

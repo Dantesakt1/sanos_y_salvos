@@ -21,5 +21,5 @@ public class ReporteDetalladoDto {
 
     private Double distanciaKm;
 
-    
+    private String fotoUrl;
 }

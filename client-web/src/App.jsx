@@ -28,7 +28,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/reportar" element={<ReportarPage />} />
             <Route path="/coincidencias" element={<CoincidenciasPage />} />
-            <Route path="/coincidencias/:idMascota" element={<CoincidenciasPage />} />
             <Route path="/mapa" element={<MapaPage />} />
             <Route path="/mis-reportes" element={<MisReportesPage />} />
           </Routes>

@@ -11,15 +11,12 @@ export function MisReportesPage() {
 
   useEffect(() => {
     const fetchMisReportes = async () => {
-      // Esperamos a que Auth0 tenga cargado al usuario
       if (!user?.sub) return;
 
       try {
         setCargando(true);
-        // Llamamos al endpoint del BFF que recibe el usuarioId (String)
-        // Nota: Asegúrate de que bffApi tenga implementado getMisReportes
         const data = await bffApi.getMisReportes(getAccessTokenSilently, user.sub);
-        setReportes(data);
+        setReportes(data || []);
       } catch (error) {
         console.error("Error cargando mis reportes:", error);
       } finally {
@@ -28,15 +25,14 @@ export function MisReportesPage() {
     };
 
     fetchMisReportes();
-  }, [getAccessTokenSilently, user?.sub]); // Se dispara cuando cambia el ID del usuario
+  }, [getAccessTokenSilently, user?.sub]);
 
   const eliminarReporte = async (id) => {
     if(window.confirm("¿Estás seguro de eliminar este reporte?")) {
         try {
-            // Implementar en bffApi: return axios.delete(`${API_URL}/mascotas/${id}`, config);
-            // await bffApi.deleteMascota(getAccessTokenSilently, id);
+            // Cuando conectes el delete real, lo pones aquí
             alert("Reporte eliminado (Simulado)");
-            setReportes(prev => prev.filter(r => r.mascotaId !== id));
+            setReportes(prev => prev.filter(r => r.id !== id)); // <-- Cambiado a r.id
         } catch (err) {
             alert("No se pudo eliminar el reporte");
         }
@@ -45,7 +41,7 @@ export function MisReportesPage() {
 
   const reportesFiltrados = filtro === 'todos' 
     ? reportes 
-    : reportes.filter(r => r.estado.toLowerCase() === filtro.toLowerCase());
+    : reportes.filter(r => r.estado && r.estado.toLowerCase() === filtro.toLowerCase());
 
   return (
     <div className="mis-reportes-container">
@@ -60,10 +56,10 @@ export function MisReportesPage() {
             Todos ({reportes.length})
           </button>
           <button className={`tab-btn ${filtro === 'perdida' ? 'activo' : ''}`} onClick={() => setFiltro('perdida')}>
-            Perdidos ({reportes.filter(r => r.estado.toLowerCase() === 'perdida').length})
+            Perdidos ({reportes.filter(r => r.estado && r.estado.toLowerCase() === 'perdida').length})
           </button>
           <button className={`tab-btn ${filtro === 'encontrada' ? 'activo' : ''}`} onClick={() => setFiltro('encontrada')}>
-            Encontrados ({reportes.filter(r => r.estado.toLowerCase() === 'encontrada').length})
+            Encontrados ({reportes.filter(r => r.estado && r.estado.toLowerCase() === 'encontrada').length})
           </button>
         </div>
       </div>
@@ -74,18 +70,33 @@ export function MisReportesPage() {
         </div>
       ) : (
         <div className="reportes-lista-vertical">
-          {reportesFiltrados.length > 0 ? reportesFiltrados.map(reporte => (
-            <div key={reporte.mascotaId} className={`reporte-card-horizontal ${reporte.estado.toLowerCase()}`}>
-              <div className="card-image-section">
-                {/* Usamos la imagen real o un placeholder si no hay URL */}
-                <img src={reporte.fotoUrl || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400'} alt={reporte.nombreMascota} />
+          {reportesFiltrados.length > 0 ? reportesFiltrados.map((reporte) => (
+            // CAMBIO CLAVE: Usamos reporte.id en lugar de mascotaId
+            <div key={reporte.id} className={`reporte-card-horizontal ${reporte.estado.toLowerCase()}`}>
+              <div className="card-image-section" style={{ overflow: 'hidden' }}>
+                <img 
+                  // Cargamos foto real, si no hay, cargamos default según especie
+                  src={reporte.fotoUrl || (reporte.especie === 'Gato' 
+                    ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                    : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400')} 
+                  alt={reporte.nombre} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    // Si el link "blob" viejo se rompe, mostramos esto para salvar el diseño
+                    e.target.onerror = null; 
+                    e.target.src = reporte.especie === 'Gato' 
+                      ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                      : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400';
+                  }}
+                />
               </div>
 
               <div className="card-info-section">
                 <div className="info-top">
                   <div className="title-group">
                     <h2>
-                        {reporte.nombreMascota} 
+                        {/* CAMBIO CLAVE: reporte.nombre en lugar de nombreMascota */}
+                        {reporte.nombre} 
                         <span className={`tag-${reporte.estado.toLowerCase()}`}>
                             {reporte.estado.toUpperCase()}
                         </span>
@@ -96,7 +107,7 @@ export function MisReportesPage() {
 
                 <div className="info-meta">
                   <span><MapPin size={16} /> Ubicación registrada</span>
-                  <span><Calendar size={16} /> Publicado en el sistema</span>
+                  <span><Calendar size={16} /> ID Registro: {reporte.id}</span>
                 </div>
 
                 <div className="alerta-coincidencias">
@@ -106,15 +117,15 @@ export function MisReportesPage() {
                 <div className="acciones-buttons">
                   <button className="btn-action purple"><Eye size={16} /> Ver Detalles</button>
                   <button className="btn-action gray"><Edit3 size={16} /> Editar</button>
-                  <button className="btn-action red-trash" onClick={() => eliminarReporte(reporte.mascotaId)}>
+                  <button className="btn-action red-trash" onClick={() => eliminarReporte(reporte.id)}>
                     <Trash2 size={16} /> Eliminar
                   </button>
                 </div>
               </div>
             </div>
           )) : (
-            <div style={{textAlign: 'center', padding: '40px', color: '#666'}}>
-                <p>No se encontraron reportes con tu cuenta de Auth0.</p>
+            <div style={{textAlign: 'center', padding: '40px', color: '#666', background: '#fff', borderRadius: '15px'}}>
+                <p>No tienes reportes activos en este momento.</p>
             </div>
           )}
         </div>

@@ -43,4 +43,9 @@ public class BFFController {
             // Aquí le pedimos al micro 8084 los datos que guardó el ConsumerController
             return coincidenciaInter.obtenerPorMascota(id);
         }
+    
+    @GetMapping("/coincidencias")
+    public List<CoincidenciaDto> getTodasCoincidencias() {
+        return coincidenciaInter.obtenerTodas();
+    }
 }

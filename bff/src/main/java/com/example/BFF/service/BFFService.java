@@ -64,6 +64,7 @@ public class BFFService implements IBFFService {
                     .contactoNombre(nombreContacto)
                     .contactoTelefono(telfContacto)
                     .distanciaKm(distancia != null ? distancia : 0.0)
+                    .fotoUrl(m.getFotoUrl())
                     .build();
         }).collect(Collectors.toList());
     }

@@ -76,5 +76,18 @@ export const bffApi = {
     });
     if (!response.ok) throw new Error('Error en el motor');
     return response.json();
-  }
+  },
+
+  getTodasCoincidencias: async (getToken) => {
+    const token = await getToken();
+    const response = await fetch(`${BASE_URL}/coincidencias`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Error al cargar el feed de coincidencias');
+    return response.json();
+  },
 };
