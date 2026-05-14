@@ -14,7 +14,6 @@ export function CoincidenciasPage() {
 
       try {
         setCargando(true);
-        // Llamamos al nuevo método que trae TODO
         const data = await bffApi.getTodasCoincidencias(getAccessTokenSilently);
         setCoincidencias(data || []);
       } catch (error) {
@@ -65,32 +64,52 @@ export function CoincidenciasPage() {
             </div>
 
             <div className="comparativa-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px', background: '#f3f4f6' }}>
+              
+              {/* LADO IZQUIERDO: REPORTE PERDIDO */}
               <div style={{ padding: '25px', background: '#fff' }}>
                 <span style={{ fontSize: '0.65rem', padding: '4px 10px', background: '#f3f4f6', borderRadius: '20px', fontWeight: '600', color: '#6b7280' }}>REPORTE PERDIDO</span>
                 <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
-                  <div style={{ width: '100px', height: '100px', background: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                     <img src="https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=150" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} alt="Original" />
+                  <div style={{ width: '100px', height: '100px', background: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                     <img 
+                       src={match.fotoMascotaPerdida || 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400'} 
+                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                       alt="Mascota Perdida" 
+                       onError={(e) => {
+                         e.target.onerror = null;
+                         e.target.src = 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400';
+                       }}
+                     />
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, color: '#1f2937' }}>ID Mascota: {match.mascotaPerdidaId}</h4>
+                    <h4 style={{ margin: 0, color: '#1f2937' }}>{match.nombreMascotaPerdida || `ID Mascota: ${match.mascotaPerdidaId}`}</h4>
                   </div>
                 </div>
               </div>
 
+              {/* LADO DERECHO: REPORTE ENCONTRADO */}
               <div style={{ padding: '25px', background: '#fff' }}>
                 <span style={{ fontSize: '0.65rem', padding: '4px 10px', background: '#dcfce7', color: '#166534', borderRadius: '20px', fontWeight: '600' }}>REPORTE ENCONTRADO</span>
                 <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
-                    <div style={{ width: '100px', height: '100px', background: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=150" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} alt="Match" />
+                    <div style={{ width: '100px', height: '100px', background: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        <img 
+                          src={match.fotoMascotaEncontrada || 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400'} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          alt="Mascota Encontrada" 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400';
+                          }}
+                        />
                     </div>
                   <div>
-                    <h4 style={{ margin: 0, color: '#1f2937' }}>ID Mascota: {match.mascotaEncontradaId}</h4>
+                    <h4 style={{ margin: 0, color: '#1f2937' }}>{match.nombreMascotaEncontrada || `ID Mascota: ${match.mascotaEncontradaId}`}</h4>
                     <div style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px', color: '#7c3aed', marginTop: '8px', cursor: 'pointer', fontWeight: '500' }}>
                       <MapPin size={14}/> Ver zona
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
             
             <div style={{ padding: '20px', background: '#fff', textAlign: 'center', borderTop: '1px solid #f3f4f6' }}>

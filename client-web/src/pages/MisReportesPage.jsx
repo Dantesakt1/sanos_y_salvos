@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, Edit3, Trash2, Calendar, MapPin, Zap, Loader2 } from 'lucide-react';
+import { Eye, Edit3, Trash2, Calendar, MapPin, Loader2 } from 'lucide-react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { bffApi } from "../components/api";
 
@@ -32,7 +32,7 @@ export function MisReportesPage() {
         try {
             // Cuando conectes el delete real, lo pones aquí
             alert("Reporte eliminado (Simulado)");
-            setReportes(prev => prev.filter(r => r.id !== id)); // <-- Cambiado a r.id
+            setReportes(prev => prev.filter(r => r.id !== id));
         } catch (err) {
             alert("No se pudo eliminar el reporte");
         }
@@ -71,18 +71,15 @@ export function MisReportesPage() {
       ) : (
         <div className="reportes-lista-vertical">
           {reportesFiltrados.length > 0 ? reportesFiltrados.map((reporte) => (
-            // CAMBIO CLAVE: Usamos reporte.id en lugar de mascotaId
             <div key={reporte.id} className={`reporte-card-horizontal ${reporte.estado.toLowerCase()}`}>
               <div className="card-image-section" style={{ overflow: 'hidden' }}>
                 <img 
-                  // Cargamos foto real, si no hay, cargamos default según especie
                   src={reporte.fotoUrl || (reporte.especie === 'Gato' 
                     ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
                     : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400')} 
                   alt={reporte.nombre} 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   onError={(e) => {
-                    // Si el link "blob" viejo se rompe, mostramos esto para salvar el diseño
                     e.target.onerror = null; 
                     e.target.src = reporte.especie === 'Gato' 
                       ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
@@ -95,7 +92,6 @@ export function MisReportesPage() {
                 <div className="info-top">
                   <div className="title-group">
                     <h2>
-                        {/* CAMBIO CLAVE: reporte.nombre en lugar de nombreMascota */}
                         {reporte.nombre} 
                         <span className={`tag-${reporte.estado.toLowerCase()}`}>
                             {reporte.estado.toUpperCase()}
@@ -105,14 +101,12 @@ export function MisReportesPage() {
                   </div>
                 </div>
 
-                <div className="info-meta">
+                <div className="info-meta" style={{ marginBottom: '25px' }}>
                   <span><MapPin size={16} /> Ubicación registrada</span>
                   <span><Calendar size={16} /> ID Registro: {reporte.id}</span>
                 </div>
 
-                <div className="alerta-coincidencias">
-                  <Zap size={16} fill="currentColor" /> Analizando posibles coincidencias...
-                </div>
+                {/* EL BLOQUE DE "ANALIZANDO COINCIDENCIAS" FUE ELIMINADO */}
 
                 <div className="acciones-buttons">
                   <button className="btn-action purple"><Eye size={16} /> Ver Detalles</button>

@@ -35,9 +35,8 @@ export function HomePage() {
           <p className="hero-subtitulo">Tecnología avanzada para encontrar mascotas perdidas más rápido que nunca.</p>
           <div className="hero-botones">
             <Link to="/reportar" className="btn-blanco">
-              Reportar Mascota Perdida <ArrowRight size={20} style={{marginLeft: '10px'}}/>
+              Reportar mascota perdida <ArrowRight size={20} style={{marginLeft: '10px'}}/>
             </Link>
-            <Link to="/reportar" className="btn-transparente">Encontré una Mascota ♡</Link>
           </div>
         </div>
 
@@ -50,10 +49,10 @@ export function HomePage() {
       <section className="recientes-wrapper">
         <div className="recientes-header">
           <div>
-            <h2 style={{fontSize: '2rem', margin: 0}}>Reportes Recientes</h2>
+            <h2 style={{fontSize: '2rem', margin: 0}}>Reportes recientes</h2>
             <p style={{color: '#666', margin: '5px 0'}}>Ayúdalos a volver a casa</p>
           </div>
-          <Link to="/mapa" style={{color: 'var(--morado)', fontWeight: 'bold', textDecoration: 'none'}}>Ver en el Mapa →</Link>
+          <Link to="/mapa" style={{color: 'var(--morado)', fontWeight: 'bold', textDecoration: 'none'}}>Ver en el mapa →</Link>
         </div>
 
         {cargando ? (
