@@ -1,0 +1,37 @@
+/* For information on how to create your own theme, please refer to:
+http://ionicframework.com/docs/theming/ */
+
+:root {
+  /* VERDE PRINCIPAL (Suave pero legible) */
+  --ion-color-primary: #10b981;
+  --ion-color-primary-rgb: 16,185,129;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #0e9f6f;
+  --ion-color-primary-tint: #28c08e;
+
+  /* VERDE SECUNDARIO (Más claro, para fondos o detalles) */
+  --ion-color-secondary: #6ee7b7;
+  --ion-color-secondary-rgb: 110,231,183;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-shade: #61cba1;
+  --ion-color-secondary-tint: #7de9be;
+
+  /* FONDO GENERAL DE LA APP (Gris muy claro casi blanco) */
+  --ion-background-color: #f9fafb;
+  
+  /* ESTILOS DE LETRA Y TARJETAS */
+  --ion-font-family: 'Inter', sans-serif;
+  --ion-card-background: #ffffff;
+}
+
+/* Colores para los estados de las mascotas (Perdida / Encontrada) */
+.estado-perdida {
+  --background: #fee2e2;
+  --color: #ef4444;
+}
+
+.estado-encontrada {
+  --background: #d1fae5;
+  --color: #059669;
+}
