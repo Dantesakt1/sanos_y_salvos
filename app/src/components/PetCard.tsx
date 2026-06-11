@@ -41,8 +41,8 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
   // Función que simula el envío de la notificación y redirige al chat
   const confirmarContacto = () => {
     console.log(`Enviando notificación al dueño del reporte de ${pet.nombre}...`);
-    // Aquí a futuro harás el POST a tu BFF para crear la sala de chat y lanzar la push notification
-    router.push('/chat', 'forward', 'push');
+    // Agregamos el ID de la mascota a la URL para que abra la sala correspondiente
+    router.push(`/chat/sala_mascota_${pet.mascotaId}`, 'forward', 'push');
   };
 
   return (

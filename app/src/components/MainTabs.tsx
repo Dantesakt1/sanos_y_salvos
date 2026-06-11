@@ -8,13 +8,16 @@ import {
   IonIcon,
   IonLabel
 } from '@ionic/react';
-import { homeOutline, addCircleOutline, mapOutline, listOutline } from 'ionicons/icons';
+import { homeOutline, addCircleOutline, mapOutline, listOutline, chatbubblesOutline } from 'ionicons/icons';
+
 
 /* Importación de Páginas */
 import HomePage from '../pages/HomePage';
 import ReportarPage from '../pages/ReportarPage';
 import MapaPage from '../pages/MapaPage';
 import MisReportesPage from '../pages/MisReportesPage';
+import ChatListPage from '../pages/ChatListPage';
+import ChatRoomPage from '../pages/ChatRoomPage';
 
 export const MainTabs: React.FC = () => {
   return (
@@ -27,6 +30,8 @@ export const MainTabs: React.FC = () => {
         <Route exact path="/mapa"><MapaPage /></Route>
         <Route exact path="/mis-reportes"><MisReportesPage /></Route>
         <Route exact path="/"><Redirect to="/home" /></Route>
+        <Route exact path="/chat"><ChatListPage /></Route>
+        <Route exact path="/chat/:salaId"><ChatRoomPage /></Route>
       </IonRouterOutlet>
 
       {/* EL MENÚ INFERIOR (Bottom Tab Bar) */}
@@ -58,6 +63,10 @@ export const MainTabs: React.FC = () => {
         <IonTabButton tab="mis-reportes" href="/mis-reportes">
           <IonIcon aria-hidden="true" icon={listOutline} />
           <IonLabel style={{ fontWeight: '500' }}>Mis Reportes</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="chat" href="/chat">
+          <IonIcon aria-hidden="true" icon={chatbubblesOutline} />
+          <IonLabel style={{ fontWeight: '500' }}>Chat</IonLabel>
         </IonTabButton>
       </IonTabBar>
 
