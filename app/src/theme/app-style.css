@@ -1,0 +1,632 @@
+/* ==========================================
+   ESTILOS PARA PETCARD (TARJETAS DE MASCOTAS)
+   ========================================== */
+.pet-card-container {
+  border-radius: 24px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  margin: 0 0 24px 0;
+  border: none;
+  background-color: #ffffff;
+}
+
+.pet-card-image-box {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.pet-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pet-card-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+}
+
+.pet-card-badge-perdida {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pet-card-badge-encontrada {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pet-card-text-block {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #ffffff;
+}
+
+.pet-card-title {
+  margin: 0 0 6px 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pet-card-subtitle {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.pet-card-subtitle ion-icon {
+  margin-right: 6px;
+}
+
+.pet-card-distance-pill {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  padding: 8px 14px;
+  border-radius: 20px;
+  align-self: flex-start;
+}
+
+.pet-card-distance-pill ion-text {
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.pet-card-btn {
+  height: 55px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* --- Estilos para el Detalle Expandido (Modal) --- */
+.modal-close-fab {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.modal-pet-banner {
+  position: relative;
+  height: 350px;
+  width: 100%;
+}
+
+.modal-pet-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-pet-gradient {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.modal-badge-pos {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: auto;
+  font-size: 1rem;
+  padding: 10px 20px;
+}
+
+.modal-pet-body {
+  padding: 25px 20px;
+  background-color: #ffffff;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  margin-top: -30px;
+  position: relative;
+  z-index: 10;
+  min-height: 60vh;
+}
+
+.modal-pet-header h1 {
+  margin: 0 0 5px 0;
+  font-weight: 900;
+  font-size: 2.2rem;
+  color: #111827;
+}
+
+.modal-pet-taxonomia {
+  display: flex;
+  align-items: center;
+  color: #6b7280;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.modal-pet-taxonomia ion-icon {
+  margin-right: 6px;
+}
+
+.modal-pet-stats-grid {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+
+.modal-stat-card {
+  flex: 1;
+  background-color: #f3f4f6;
+  padding: 12px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-stat-card ion-icon {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.stat-value {
+  color: #1f2937;
+}
+
+.modal-section-title {
+  font-weight: bold;
+  color: #111827;
+  font-size: 1.2rem;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.modal-section-title ion-icon {
+  margin-right: 8px;
+}
+
+.modal-pet-description-text {
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
+
+.modal-submit-btn {
+  height: 60px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+
+/* ==========================================
+   ESTILOS PARA REPORTARPAGE (FORMULARIO)
+   ========================================== */
+.reportar-banner {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, #10b981 100%);
+  border-radius: 24px;
+  padding: 26px 20px;
+  color: #ffffff;
+  margin-bottom: 25px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+}
+
+.reportar-banner-icon {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.reportar-banner h2 {
+  font-weight: 900;
+  margin: 0 0 5px 0;
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+}
+
+.reportar-banner p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.reportar-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reportar-item-card {
+  --border-radius: 20px;
+  --background: #ffffff;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+}
+
+.reportar-item-card ion-input,
+.reportar-item-card ion-select,
+.reportar-item-card ion-textarea {
+  font-size: 0.95rem;
+  --cool-gray: #4b5563;
+  color: #1f2937;
+}
+
+.reportar-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 24px;
+  padding: 35px 20px;
+  text-align: center;
+  background-color: #ffffff;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+}
+
+.reportar-dropzone:active {
+  background-color: #f8fafc;
+  border-color: var(--ion-color-primary);
+  transform: scale(0.99);
+}
+
+.reportar-icon-circle {
+  background-color: #f1f5f9;
+  border-radius: 50%;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.reportar-icon-circle ion-icon {
+  font-size: 2.5rem;
+  color: #64748b;
+  display: block;
+}
+
+.reportar-dropzone h3 {
+  margin: 0 0 5px 0;
+  font-weight: bold;
+  color: #334155;
+  font-size: 1.1rem;
+}
+
+.reportar-dropzone p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.reportar-submit-btn {
+  height: 58px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.2px;
+  --box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+  margin-bottom: 40px;
+}
+
+
+/* ==========================================
+   ESTILOS PARA MIS REPORTES PAGE
+   ========================================== */
+.mis-reportes-toolbar {
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.mis-reportes-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.mis-reportes-header-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: normal;
+}
+
+.mis-reportes-header-title {
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: var(--ion-color-primary);
+  letter-spacing: -0.5px;
+}
+
+.mis-reportes-instruction-box {
+  padding: 14px 16px;
+  margin: 16px 16px 8px 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* Estado Vacío */
+.mis-reportes-empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mis-reportes-empty-icon {
+  font-size: 5rem;
+  color: #cbd5e1;
+  margin-bottom: 15px;
+}
+
+/* Lista e Items */
+.mis-reportes-list {
+  background: transparent;
+  margin: 8px 16px 0 16px;
+}
+
+.mis-reportes-item-sliding {
+  border-radius: 16px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.mis-reportes-item {
+  --background: #ffffff;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --border-radius: 16px;
+}
+
+.mis-reportes-thumbnail {
+  --border-radius: 12px;
+  width: 65px;
+  height: 65px;
+  margin-right: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.mis-reportes-item-title {
+  font-weight: 800;
+  color: #1f2937;
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.mis-reportes-item-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.mis-reportes-badge {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+
+/* ==========================================
+   ESTILOS PARA EL MAPA Y PINES PERSONALIZADOS
+   ========================================== */
+.map-header-toolbar {
+  padding-top: 10px;
+}
+
+.map-header-title {
+  font-weight: 900;
+  color: var(--ion-color-primary);
+  font-size: 1.4rem;
+}
+
+.map-container-wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.map-leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.map-avatar-container {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 20px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  padding: 5px !important;
+  border: 1px solid #f1f5f9;
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px 12px 16px !important;
+  min-width: 140px !important;
+}
+
+.leaflet-popup-close-button {
+  display: none !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.custom-popup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.custom-popup-title {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1f2937;
+}
+
+.custom-popup-distance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 14px;
+  background-color: #f3f4f6;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.popup-distance-icon {
+  color: var(--ion-color-primary);
+}
+
+.popup-action-btn {
+  font-weight: bold;
+  margin: 0;
+  width: 100%;
+  --box-shadow: none;
+}
+
+
+/* ==========================================
+   TARJETA DE CONTACTO DE USUARIO (MODAL)
+   ========================================== */
+.contact-section-title {
+  margin-top: 25px;
+}
+
+.modal-user-contact-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 18px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+}
+
+.contact-user-info h4 {
+  margin: 0 0 4px 0;
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.contact-user-info p {
+  margin: 0 0 16px 0;
+  font-size: 0.88rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.contact-actions-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.contact-action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.contact-action-btn.call {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.contact-action-btn.email {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.contact-action-btn.chat {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.contact-action-btn:active {
+  opacity: 0.8;
+}
+
+.contact-action-btn ion-icon {
+  font-size: 1.3rem;
+}

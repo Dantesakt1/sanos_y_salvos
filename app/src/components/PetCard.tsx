@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { 
   IonCard, IonCardContent, IonBadge, IonIcon, IonText, 
-  IonButton, useIonRouter, IonAlert 
+  IonButton, useIonRouter, IonAlert, IonModal, IonContent, IonFab, IonFabButton 
 } from '@ionic/react';
-import { locationOutline, searchOutline, heartOutline } from 'ionicons/icons';
+import { 
+  locationOutline, searchOutline, heartOutline, pawOutline, personOutline, closeOutline, informationCircleOutline 
+} from 'ionicons/icons';
 
 export interface Mascota {
-  mascotaId: number;
+  id: number;
   nombre: string;
   especie: string;
+  raza: string;
   estado: string;
-  distanciaKm: number;
+  latitud: number;
+  longitud: number;
+  descripcion: string;
+  usuarioId: string;
   fotoUrl: string;
-  raza?: string;
+  distanciaKm: number;
 }
 
 interface PetCardProps {
@@ -22,100 +28,151 @@ interface PetCardProps {
 export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
   const router = useIonRouter();
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
-  const cardStyle = {
-    borderRadius: '16px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-    margin: '16px',
-    backgroundColor: '#ffffff'
-  };
+  const isPerdida = pet.estado.toLowerCase() === 'perdida';
 
-  const imgStyle: React.CSSProperties = {
-    width: '100%',
-    height: '180px',
-    objectFit: 'cover',
-    borderTopLeftRadius: '16px',
-    borderTopRightRadius: '16px'
-  };
-
-  // Función que simula el envío de la notificación y redirige al chat
   const confirmarContacto = () => {
-    console.log(`Enviando notificación al dueño del reporte de ${pet.nombre}...`);
-    // Agregamos el ID de la mascota a la URL para que abra la sala correspondiente
-    router.push(`/chat/sala_mascota_${pet.mascotaId}`, 'forward', 'push');
+    router.push(`/chat/sala_mascota_${pet.id}`, 'forward', 'push');
+    setMostrarModal(false);
+  };
+
+  const handleAccionClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
+    setMostrarAlerta(true);
   };
 
   return (
     <>
-      <IonCard style={cardStyle}>
-        <div style={{ position: 'relative' }}>
-          <img 
-            src={pet.fotoUrl || 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400'} 
-            alt={pet.nombre} 
-            style={imgStyle}
-          />
-          <IonBadge 
-            className={`estado-${pet.estado.toLowerCase()}`}
-            style={{ position: 'absolute', top: '10px', left: '10px', padding: '6px 12px', borderRadius: '12px' }}
-          >
+      {/* TARJETA PRINCIPAL (Usa las clases nativas de tu CSS) */}
+      <IonCard className="pet-card-container" onClick={() => setMostrarModal(true)}>
+        
+        <div className="pet-card-image-box">
+          <img src={pet.fotoUrl || 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400'} alt={pet.nombre} className="pet-card-img" />
+          <div className="pet-card-overlay"></div>
+
+          <IonBadge className={isPerdida ? 'pet-card-badge-perdida' : 'pet-card-badge-encontrada'}>
             {pet.estado.toUpperCase()}
           </IonBadge>
+
+          <div className="pet-card-text-block">
+            <h2 className="pet-card-title">{pet.nombre}</h2>
+            <div className="pet-card-subtitle">
+              <IonIcon icon={pawOutline} />
+              <span>{pet.especie} {pet.raza ? `• ${pet.raza}` : ''}</span>
+            </div>
+          </div>
         </div>
 
-        <IonCardContent>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1f2937', margin: '0 0 5px 0' }}>
-            {pet.nombre}
-          </h2>
-          <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '10px' }}>
-            {pet.especie} {pet.raza ? `• ${pet.raza}` : ''}
-          </p>
-
-          <div style={{ display: 'flex', alignItems: 'center', color: 'var(--ion-color-primary)', fontWeight: '600', marginBottom: '15px' }}>
-            <IonIcon icon={locationOutline} style={{ marginRight: '4px' }} />
-            <IonText>A {pet.distanciaKm.toFixed(1)} km de ti</IonText>
-          </div>
-
-          {/* RENDERIZADO CONDICIONAL DE BOTONES */}
-          {pet.estado === 'perdida' ? (
-            <IonButton 
-              expand="block" 
-              color="primary" 
-              onClick={() => setMostrarAlerta(true)}
-              style={{ fontWeight: 'bold', height: '45px' }}
-            >
-              <IonIcon slot="start" icon={searchOutline} />
-              ¡Lo encontré!
-            </IonButton>
-          ) : (
-            <IonButton 
-              expand="block" 
-              color="success" 
-              onClick={() => setMostrarAlerta(true)}
-              style={{ fontWeight: 'bold', height: '45px' }}
-            >
-              <IonIcon slot="start" icon={heartOutline} />
-              ¡Es mío!
-            </IonButton>
+        <IonCardContent className="pet-card-content">
+          {pet.descripcion && (
+            <p className="pet-card-description-truncated">
+              "{pet.descripcion}"
+            </p>
           )}
+
+          <div className="pet-card-footer-layout">
+            <div className="pet-card-distance-pill">
+              <IonIcon icon={locationOutline} color="primary" />
+              <IonText>A {pet.distanciaKm.toFixed(1)} km</IonText>
+            </div>
+
+            <IonButton 
+              expand="block" 
+              shape="round" 
+              color={isPerdida ? 'primary' : 'success'} 
+              onClick={handleAccionClick}
+              className="pet-card-btn"
+            >
+              <IonIcon slot="start" icon={isPerdida ? searchOutline : heartOutline} />
+              {isPerdida ? '¡Lo encontré!' : '¡Es mío!'}
+            </IonButton>
+          </div>
         </IonCardContent>
       </IonCard>
 
-      {/* ALERTA DE CONFIRMACIÓN */}
+      {/* ==========================================
+          MODAL DE DETALLE EXTENDIDO
+          ========================================== */}
+      <IonModal isOpen={mostrarModal} onDidDismiss={() => setMostrarModal(false)}>
+        <IonContent color="light">
+          
+          {/* Botón flotante cerrar */}
+          <IonFab vertical="top" horizontal="end" slot="fixed" className="modal-close-fab">
+            <IonFabButton color="light" size="small" onClick={() => setMostrarModal(false)}>
+              <IonIcon icon={closeOutline} />
+            </IonFabButton>
+          </IonFab>
+
+          {/* Banner de Imagen Superior */}
+          <div className="modal-pet-banner">
+            <img src={pet.fotoUrl} alt={pet.nombre} />
+            <div className="modal-pet-gradient"></div>
+            <IonBadge className={isPerdida ? 'pet-card-badge-perdida modal-badge-pos' : 'pet-card-badge-encontrada modal-badge-pos'}>
+              {pet.estado.toUpperCase()}
+            </IonBadge>
+          </div>
+
+          {/* Contenedor de la información explayada */}
+          <div className="modal-pet-body">
+            
+            <div className="modal-pet-header">
+              <h1>{pet.nombre}</h1>
+              <div className="modal-pet-taxonomia">
+                <IonIcon icon={pawOutline} />
+                <span>{pet.especie} {pet.raza ? `• ${pet.raza}` : ''}</span>
+              </div>
+            </div>
+
+            {/* Grid de píldoras de información */}
+            <div className="modal-pet-stats-grid">
+              <div className="modal-stat-card">
+                <IonIcon icon={locationOutline} color="primary" />
+                <span className="stat-label">Distancia</span>
+                <strong className="stat-value">{pet.distanciaKm.toFixed(1)} km</strong>
+              </div>
+              
+              <div className="modal-stat-card">
+                <IonIcon icon={personOutline} color="secondary" />
+                <span className="stat-label">Reportado por</span>
+                <strong className="stat-value">{pet.usuarioId}</strong>
+              </div>
+            </div>
+
+            {/* Sección de la Descripción Completa */}
+            <h3 className="modal-section-title">
+              <IonIcon icon={informationCircleOutline} color="primary" />
+              Descripción
+            </h3>
+            <p className="modal-pet-description-text">
+              {pet.descripcion || 'Sin descripción adicional proporcionada.'}
+            </p>
+
+            {/* Botón de acción definitivo */}
+            <IonButton 
+              expand="block" 
+              shape="round" 
+              color={isPerdida ? 'primary' : 'success'} 
+              onClick={() => setMostrarAlerta(true)}
+              className="modal-submit-btn"
+            >
+              <IonIcon slot="start" icon={isPerdida ? searchOutline : heartOutline} />
+              {isPerdida ? '¡Lo encontré!' : '¡Es mío!'}
+            </IonButton>
+
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* ALERTA */}
       <IonAlert
         isOpen={mostrarAlerta}
         onDidDismiss={() => setMostrarAlerta(false)}
         header="¿Iniciar contacto?"
-        message={`Se enviará una notificación al usuario que publicó a ${pet.nombre} para que puedan coordinar por chat.`}
+        message={`Se enviará una notificación a ${pet.usuarioId} para coordinar.`}
         buttons={[
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            cssClass: 'secondary'
-          },
-          {
-            text: 'Sí, contactar',
-            handler: () => confirmarContacto()
-          }
+          { text: 'Cancelar', role: 'cancel', cssClass: 'secondary' },
+          { text: 'Sí, contactar', handler: () => confirmarContacto() }
         ]}
       />
     </>
