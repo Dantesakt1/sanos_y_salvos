@@ -6,4 +6,5 @@ com\example\demo\controller\ConsumerController.class
 com\example\demo\model\Coincidencia.class
 com\example\demo\client\GeolocalizacionClient.class
 com\example\demo\client\UsuarioClient.class
+com\example\demo\controller\CoincidenciaQueryController.class
 com\example\demo\CoincidenciaApplication.class
