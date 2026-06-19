@@ -12,4 +12,8 @@ public interface IBFFService {
     MascotaDto registrarReporteCompleto(MascotaDto mascota);
 
     List<MascotaDto> obtenerMisReportes(String usuarioId);
+
+    ReporteDetalladoDto obtenerMascotaPorId(Long id);
+
+    MascotaDto actualizarEstadoMascota(Long id, String estado);
 }

@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.BFF.DTO.MascotaDto;
@@ -22,4 +23,10 @@ public interface AnimalesInterface {
 
     @GetMapping("/api/mascotas/usuario/{usuarioId}")
     List<MascotaDto> listarPorUsuario(@PathVariable("usuarioId") String usuarioId);
+
+    @GetMapping("/api/mascotas/{id}")
+    MascotaDto obtenerMascotaPorId(@PathVariable("id") Long id);
+
+    @PutMapping("/api/mascotas/{id}/estado")
+    MascotaDto actualizarEstado(@PathVariable("id") Long id, @RequestBody MascotaDto datos);
 }

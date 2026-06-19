@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, MapPin, Loader2 } from 'lucide-react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { bffApi } from "../components/api";
@@ -8,6 +8,7 @@ export function HomePage() {
   const [reportes, setReportes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReportes = async () => {
@@ -61,8 +62,8 @@ export function HomePage() {
           </div>
         ) : (
           <div className="reportes-grid">
-            {reportes.length > 0 ? (
-              reportes.map(pet => (
+            {reportes.filter(r => r.estado !== 'identificado').length > 0 ? (
+              reportes.filter(r => r.estado !== 'identificado').map(pet => (
                 <div key={pet.mascotaId} className="tarjeta-pet">
                   <div style={{ position: 'relative' }}>
                     
@@ -98,7 +99,7 @@ export function HomePage() {
                       Contacto: {pet.contactoNombre}
                     </p>
 
-                    <button style={{width: '100%', background: 'var(--morado)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'}}>
+                    <button onClick={() => navigate(`/mascota/${pet.mascotaId}`)} style={{width: '100%', background: 'var(--morado)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'}}>
                       Ver Detalles
                     </button>
                   </div>
@@ -110,6 +111,62 @@ export function HomePage() {
           </div>
         )}
       </section>
+
+      {/* SECCIÓN DE ANIMALES IDENTIFICADOS */}
+      {!cargando && reportes.filter(r => r.estado === 'identificado').length > 0 && (
+        <section className="recientes-wrapper" style={{ marginTop: '40px' }}>
+          <div className="recientes-header">
+            <div>
+              <h2 style={{fontSize: '2rem', margin: 0, color: '#10B981'}}>Animales Identificados</h2>
+              <p style={{color: '#666', margin: '5px 0'}}>Mascotas que ya se han reunido con sus dueños o están a salvo</p>
+            </div>
+          </div>
+
+          <div className="reportes-grid">
+            {reportes.filter(r => r.estado === 'identificado').map(pet => (
+              <div key={pet.mascotaId} className="tarjeta-pet" style={{ opacity: 0.9 }}>
+                <div style={{ position: 'relative' }}>
+                  
+                  <img 
+                    src={pet.fotoUrl || (pet.especie === 'Gato' 
+                      ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                      : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400')} 
+                    className="tarjeta-img" 
+                    alt={pet.nombreMascota} 
+                    onError={(e) => {
+                      e.target.onerror = null; // Previene bucles
+                      e.target.src = pet.especie === 'Gato' 
+                        ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' 
+                        : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=400';
+                    }}
+                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '15px 15px 0 0' }}
+                  />
+
+                  <span className={`etiqueta ${pet.estado}`} style={{ position: 'absolute', top: '15px', left: '15px', background: '#10B981', color: 'white' }}>
+                    {pet.estado.toUpperCase()}
+                  </span>
+                </div>
+                <div className="tarjeta-cuerpo">
+                  <h3 style={{margin: '0 0 5px 0'}}>{pet.nombreMascota}</h3>
+                  <p style={{color: '#888', fontSize: '0.8rem', margin: '0 0 15px 0'}}>{pet.especie}</p>
+                  
+                  <div style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#666', marginBottom: '5px'}}>
+                    <MapPin size={14}/> A {pet.distanciaKm.toFixed(1)} km de ti
+                  </div>
+
+                  <p style={{fontSize: '0.75rem', color: '#999', marginBottom: '15px'}}>
+                    Contacto: {pet.contactoNombre}
+                  </p>
+
+                  <button onClick={() => navigate(`/mascota/${pet.mascotaId}`)} style={{width: '100%', background: 'var(--morado)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'}}>
+                    Ver Detalles
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
