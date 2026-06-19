@@ -40,7 +40,13 @@ public class BFFService implements IBFFService {
                 UsuarioDto user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
                 if (user != null) {
                     nombreContacto = user.getNombre() + " " + user.getApellido();
-                    telfContacto = user.getTelefono();
+                    if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                        telfContacto = m.getTelefonoContacto();
+                    } else {
+                        telfContacto = user.getTelefono();
+                    }
+                } else if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                    telfContacto = m.getTelefonoContacto();
                 }
             } catch (Exception e) {
                 System.err.println("Error al buscar usuario " + m.getUsuarioId() + ": " + e.getMessage());
@@ -97,7 +103,13 @@ public class BFFService implements IBFFService {
             UsuarioDto user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
             if (user != null) {
                 nombreContacto = user.getNombre() + " " + user.getApellido();
-                telfContacto = user.getTelefono();
+                if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                    telfContacto = m.getTelefonoContacto();
+                } else {
+                    telfContacto = user.getTelefono();
+                }
+            } else if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                telfContacto = m.getTelefonoContacto();
             }
         } catch (Exception e) {
             System.err.println("Error al buscar usuario " + m.getUsuarioId() + ": " + e.getMessage());

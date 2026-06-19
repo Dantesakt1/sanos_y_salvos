@@ -114,11 +114,35 @@ export function DetallesPage() {
               </div>
             </div>
             
-            <div style={{display: 'flex', alignItems: 'flex-start', gap: '10px'}}>
+            <div style={{display: 'flex', alignItems: 'flex-start', gap: '10px', gridColumn: 'span 2'}}>
               <MapPin size={24} color="var(--morado)" />
-              <div>
+              <div style={{width: '100%'}}>
                 <strong style={{display: 'block', color: '#333'}}>Ubicación</strong>
-                <p style={{margin: '5px 0', color: '#666'}}>Lat: {mascota.latitud.toFixed(4)}, Lng: {mascota.longitud.toFixed(4)}</p>
+                <p style={{margin: '5px 0', color: '#666'}}>
+                  Lat: {mascota.latitud != null ? mascota.latitud.toFixed(4) : 'N/A'}, 
+                  Lng: {mascota.longitud != null ? mascota.longitud.toFixed(4) : 'N/A'}
+                </p>
+                {mascota.latitud != null && mascota.longitud != null && (
+                  <div style={{marginTop: '15px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #eee'}}>
+                    <iframe
+                      title="Mapa de ubicación"
+                      width="100%"
+                      height="250"
+                      frameBorder="0"
+                      style={{border: 0}}
+                      src={`https://maps.google.com/maps?q=${mascota.latitud},${mascota.longitud}&hl=es&z=15&output=embed`}
+                      allowFullScreen
+                    ></iframe>
+                    <a 
+                      href={`https://www.google.com/maps/search/?api=1&query=${mascota.latitud},${mascota.longitud}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{display: 'block', padding: '12px', background: '#f8f9fa', textAlign: 'center', color: 'var(--morado)', textDecoration: 'none', fontWeight: 'bold', borderTop: '1px solid #eee'}}
+                    >
+                      Abrir en Google Maps
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
 

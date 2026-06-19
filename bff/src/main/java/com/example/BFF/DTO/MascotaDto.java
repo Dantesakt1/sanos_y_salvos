@@ -14,5 +14,6 @@ public class MascotaDto {
     private String descripcion;
     private String usuarioId;
     private String fotoUrl;
+    private String telefonoContacto;
     
 }
