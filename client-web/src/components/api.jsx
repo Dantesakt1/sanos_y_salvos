@@ -78,7 +78,7 @@ export const bffApi = {
     return response.json();
   },
 
-  getTodasCoincidencias: async (getToken) => {
+    getTodasCoincidencias: async (getToken) => {
     const token = await getToken();
     const response = await fetch(`${BASE_URL}/coincidencias`, {
       method: 'GET',
@@ -88,6 +88,33 @@ export const bffApi = {
       },
     });
     if (!response.ok) throw new Error('Error al cargar el feed de coincidencias');
+    return response.json();
+  },
+
+  getMascotaById: async (getToken, id) => {
+    const token = await getToken();
+    const response = await fetch(`${BASE_URL}/mascotas/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Error al obtener la mascota');
+    return response.json();
+  },
+
+  actualizarEstadoMascota: async (getToken, id, estado) => {
+    const token = await getToken();
+    const response = await fetch(`${BASE_URL}/mascotas/${id}/estado`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ estado }),
+    });
+    if (!response.ok) throw new Error('Error al actualizar el estado de la mascota');
     return response.json();
   },
 };

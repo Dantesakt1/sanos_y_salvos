@@ -48,4 +48,14 @@ public class BFFController {
     public List<CoincidenciaDto> getTodasCoincidencias() {
         return coincidenciaInter.obtenerTodas();
     }
+
+    @GetMapping("/mascotas/{id}")
+    public ReporteDetalladoDto getMascotaPorId(@PathVariable("id") Long id) {
+        return bffService.obtenerMascotaPorId(id);
+    }
+
+    @PutMapping("/mascotas/{id}/estado")
+    public MascotaDto actualizarEstado(@PathVariable("id") Long id, @RequestBody MascotaDto datos) {
+        return bffService.actualizarEstadoMascota(id, datos.getEstado());
+    }
 }
