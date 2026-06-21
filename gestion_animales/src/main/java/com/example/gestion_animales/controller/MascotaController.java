@@ -20,7 +20,9 @@ import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/mascotas")
@@ -88,5 +90,22 @@ public class MascotaController {
     @GetMapping("/usuario/{usuarioId}")
     public List<Mascota> listarPorUsuario(@PathVariable String usuarioId) {
         return mascotaRepository.findByUsuarioId(usuarioId);
+    }
+
+    @GetMapping("/{id}")
+    public Mascota obtenerPorId(@PathVariable Long id) {
+        Optional<Mascota> mascota = mascotaRepository.findById(id);
+        return mascota.orElse(null);
+    }
+
+    @PutMapping("/{id}/estado")
+    public Mascota actualizarEstado(@PathVariable Long id, @RequestBody Mascota datos) {
+        Optional<Mascota> mascotaOpt = mascotaRepository.findById(id);
+        if (mascotaOpt.isPresent()) {
+            Mascota m = mascotaOpt.get();
+            m.setEstado(datos.getEstado());
+            return mascotaRepository.save(m);
+        }
+        return null;
     }
 }

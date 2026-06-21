@@ -8,6 +8,7 @@ import { ReportarPage } from './pages/ReportarPage';
 import { CoincidenciasPage } from './pages/CoincidenciasPage';
 import { MapaPage } from './pages/MapaPage';
 import { MisReportesPage } from './pages/MisReportesPage';
+import { DetallesPage } from './pages/DetallesPage';
 
 import './App.css';
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/coincidencias" element={<CoincidenciasPage />} />
             <Route path="/mapa" element={<MapaPage />} />
             <Route path="/mis-reportes" element={<MisReportesPage />} />
+            <Route path="/mascota/:id" element={<DetallesPage />} />
           </Routes>
         ) : (
           <div style={{ textAlign: 'center', marginTop: '40px' }}>

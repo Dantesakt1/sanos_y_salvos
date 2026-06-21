@@ -40,7 +40,13 @@ public class BFFService implements IBFFService {
                 UsuarioDto user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
                 if (user != null) {
                     nombreContacto = user.getNombre() + " " + user.getApellido();
-                    telfContacto = user.getTelefono();
+                    if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                        telfContacto = m.getTelefonoContacto();
+                    } else {
+                        telfContacto = user.getTelefono();
+                    }
+                } else if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                    telfContacto = m.getTelefonoContacto();
                 }
             } catch (Exception e) {
                 System.err.println("Error al buscar usuario " + m.getUsuarioId() + ": " + e.getMessage());
@@ -83,5 +89,51 @@ public class BFFService implements IBFFService {
     public List<MascotaDto> obtenerMisReportes(String usuarioId) {
         // Llamada directa al microservicio filtrada por usuario
         return animalesInterface.listarPorUsuario(usuarioId);
+    }
+
+    @Override
+    public ReporteDetalladoDto obtenerMascotaPorId(Long id) {
+        MascotaDto m = animalesInterface.obtenerMascotaPorId(id);
+        if (m == null) return null;
+
+        String nombreContacto = "Contacto no disponible";
+        String telfContacto = "Sin teléfono";
+
+        try {
+            UsuarioDto user = usuarioInterface.obtenerUsuarioPorId(m.getUsuarioId());
+            if (user != null) {
+                nombreContacto = user.getNombre() + " " + user.getApellido();
+                if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                    telfContacto = m.getTelefonoContacto();
+                } else {
+                    telfContacto = user.getTelefono();
+                }
+            } else if (m.getTelefonoContacto() != null && !m.getTelefonoContacto().isEmpty()) {
+                telfContacto = m.getTelefonoContacto();
+            }
+        } catch (Exception e) {
+            System.err.println("Error al buscar usuario " + m.getUsuarioId() + ": " + e.getMessage());
+        }
+
+        return ReporteDetalladoDto.builder()
+                .mascotaId(m.getId())
+                .nombreMascota(m.getNombre())
+                .especie(m.getEspecie())
+                .estado(m.getEstado())
+                .descripcion(m.getDescripcion())
+                .latitud(m.getLatitud())
+                .longitud(m.getLongitud())
+                .contactoNombre(nombreContacto)
+                .contactoTelefono(telfContacto)
+                .distanciaKm(0.0)
+                .fotoUrl(m.getFotoUrl())
+                .build();
+    }
+
+    @Override
+    public MascotaDto actualizarEstadoMascota(Long id, String estado) {
+        MascotaDto datos = new MascotaDto();
+        datos.setEstado(estado);
+        return animalesInterface.actualizarEstado(id, datos);
     }
 }

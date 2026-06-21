@@ -22,7 +22,8 @@ export function ReportarPage() {
     latitud: null,
     longitud: null,
     fotoUrl: '', 
-    usuarioId: '' 
+    usuarioId: '',
+    telefonoContacto: ''
   });
 
   const handleChange = (e) => {
@@ -146,6 +147,11 @@ export function ReportarPage() {
         <div className="grupo-input" style={{gridColumn: 'span 2'}}>
           <label>Raza</label>
           <input name="raza" type="text" className="input-texto" placeholder="Ej: Golden Retriever" value={formData.raza} onChange={handleChange} />
+        </div>
+
+        <div className="grupo-input" style={{gridColumn: 'span 2'}}>
+          <label>Teléfono de Contacto (Opcional)</label>
+          <input name="telefonoContacto" type="tel" className="input-texto" placeholder="Ej: +56912345678" value={formData.telefonoContacto} onChange={handleChange} />
         </div>
         
         <div className="grupo-input" style={{gridColumn: 'span 2'}}>
