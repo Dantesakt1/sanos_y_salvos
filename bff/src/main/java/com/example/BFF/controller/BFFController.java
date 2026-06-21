@@ -12,7 +12,7 @@ import com.example.BFF.service.BFFService;
 
 @RestController
 @RequestMapping("/api/bff")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:8100"})
 public class BFFController {
 
     @Autowired

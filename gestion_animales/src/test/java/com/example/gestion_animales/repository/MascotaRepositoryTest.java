@@ -17,28 +17,24 @@ class MascotaRepositoryTest {
 
     @Test
     void debeEncontrarPorEspecieYEstado() {
-        // Preparar
-        Mascota m = new Mascota(null, "Rex", "Perro", "Pastor", "Perdido", 0.0, 0.0, "Jugueton", "user1", "url");
+        // Se agregó null al final para telefonoContacto
+        Mascota m = new Mascota(null, "Rex", "Perro", "Pastor", "Perdido", 0.0, 0.0, "Jugueton", "user1", "url", null);
         mascotaRepository.save(m);
 
-        // Ejecutar
         List<Mascota> resultado = mascotaRepository.findByEspecieAndEstado("Perro", "Perdido");
 
-        // Validar
         assertFalse(resultado.isEmpty());
         assertEquals("Rex", resultado.get(0).getNombre());
     }
 
     @Test
     void debeEncontrarPorUsuarioId() {
-        // Preparar
-        Mascota m = new Mascota(null, "Pelusa", "Gato", "Mestizo", "Encontrado", 0.0, 0.0, "Tranquila", "admin", "url");
+        // Se agregó null al final para telefonoContacto
+        Mascota m = new Mascota(null, "Pelusa", "Gato", "Mestizo", "Encontrado", 0.0, 0.0, "Tranquila", "admin", "url", null);
         mascotaRepository.save(m);
 
-        // Ejecutar
         List<Mascota> resultado = mascotaRepository.findByUsuarioId("admin");
 
-        // Validar
         assertFalse(resultado.isEmpty());
         assertEquals("admin", resultado.get(0).getUsuarioId());
     }

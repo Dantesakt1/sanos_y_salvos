@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.web.servlet.MockMvc;
-
-// 1. EL NUEVO IMPORT OFICIAL PARA SPRING BOOT 3.4
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,8 +35,9 @@ class MascotaControllerTest {
 
     @Test
     void debeListarTodasLasMascotas() throws Exception {
-        Mascota m1 = new Mascota(1L, "Luna", "Perro", "Labrador", "Perdido", 0.0, 0.0, "Con collar", "user1", "url");
-        Mascota m2 = new Mascota(2L, "Michi", "Gato", "Siames", "Encontrado", 0.0, 0.0, "Sin collar", "user2", "url");
+        // Se agregó el 11vo parámetro: telefonoContacto
+        Mascota m1 = new Mascota(1L, "Luna", "Perro", "Labrador", "Perdido", 0.0, 0.0, "Con collar", "user1", "url", "+56912345678");
+        Mascota m2 = new Mascota(2L, "Michi", "Gato", "Siames", "Encontrado", 0.0, 0.0, "Sin collar", "user2", "url", "+56987654321");
 
         Mockito.when(mascotaRepository.findAll()).thenReturn(Arrays.asList(m1, m2));
 
@@ -51,7 +50,7 @@ class MascotaControllerTest {
 
     @Test
     void debeCrearUnaMascota() throws Exception {
-        Mascota mascotaGuardada = new Mascota(1L, "Toby", "Perro", "Quiltro", "Perdido", -33.5, -70.6, "Chico", "user1", "url");
+        Mascota mascotaGuardada = new Mascota(1L, "Toby", "Perro", "Quiltro", "Perdido", -33.5, -70.6, "Chico", "user1", "url", "+56911111111");
 
         Mockito.when(mascotaRepository.save(Mockito.any(Mascota.class))).thenReturn(mascotaGuardada);
 
@@ -66,7 +65,7 @@ class MascotaControllerTest {
 
     @Test
     void debeBuscarMascotasCompatibles() throws Exception {
-        Mascota m1 = new Mascota(1L, "Rex", "Perro", "Pastor", "Encontrado", 0.0, 0.0, "", "user1", "");
+        Mascota m1 = new Mascota(1L, "Rex", "Perro", "Pastor", "Encontrado", 0.0, 0.0, "", "user1", "", null);
 
         Mockito.when(mascotaRepository.findByEspecieAndEstado("Perro", "Encontrado"))
                 .thenReturn(Arrays.asList(m1));
@@ -82,7 +81,7 @@ class MascotaControllerTest {
 
     @Test
     void debeListarMascotasPorUsuario() throws Exception {
-        Mascota m1 = new Mascota(1L, "Kiltro", "Perro", "Mestizo", "Perdido", 0.0, 0.0, "", "admin", "");
+        Mascota m1 = new Mascota(1L, "Kiltro", "Perro", "Mestizo", "Perdido", 0.0, 0.0, "", "admin", "", null);
 
         Mockito.when(mascotaRepository.findByUsuarioId("admin"))
                 .thenReturn(Arrays.asList(m1));
@@ -94,20 +93,17 @@ class MascotaControllerTest {
     }
 
     @Autowired
-    private MascotaController mascotaController; // Para probar los métodos de emergencia directamente
+    private MascotaController mascotaController; 
 
     @Test
     void debeEjecutarMetodosDeEmergenciaYKafka() {
-        // Prueba el fallbackListar
         java.util.List<Mascota> listaVacia = mascotaController.fallbackListar(new RuntimeException("Fallo BD"));
         org.junit.jupiter.api.Assertions.assertTrue(listaVacia.isEmpty());
 
-        // Prueba el fallbackGrabar
         Mascota m = new Mascota();
         Mascota respuestaError = mascotaController.fallbackGrabar(m, new RuntimeException("Fallo BD"));
         org.junit.jupiter.api.Assertions.assertEquals("Sistema temporalmente fuera de línea. Reporte encolado.", respuestaError.getNombre());
 
-        // Prueba el listener de Kafka
         mascotaController.escucharPendientes(m);
         Mockito.verify(mascotaRepository, Mockito.atLeastOnce()).save(m);
     }

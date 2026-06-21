@@ -1,241 +1,188 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, 
-  IonModal, IonFab, IonFabButton, IonIcon, IonBadge, IonButton, IonAlert 
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner, IonIcon 
 } from '@ionic/react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { 
-  closeOutline, pawOutline, locationOutline, personOutline, 
-  informationCircleOutline, searchOutline, heartOutline, openOutline,
-  callOutline, mailOutline, chatbubblesOutline
-} from 'ionicons/icons';
+import L from 'leaflet';
+import { useAuth0 } from "@auth0/auth0-react";
+import { locationOutline, callOutline, personOutline } from 'ionicons/icons';
 
-import { Mascota } from '../components/PetCard'; 
+// Reparación de iconos de Leaflet
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-export interface Usuario {
-  id: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  ciudad: string;
-}
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
-interface MascotaConContacto extends Mascota {
-  contacto: Usuario;
+// Componente para mover la cámara suavemente
+function ChangeView({ center }: { center: [number, number] }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && center[0] && center[1]) {
+      map.setView(center, 15);
+    }
+  }, [center, map]);
+  return null;
 }
 
 const MapaPage: React.FC = () => {
-  const [center] = useState<[number, number]>([-33.45, -70.66]);
+  const { getAccessTokenSilently } = useAuth0();
+  const [posicionMapa, setPosicionMapa] = useState<[number, number]>([-33.4489, -70.6693]);
+  const [mascotas, setMascotas] = useState<any[]>([]);
+  const [cargando, setCargando] = useState(true);
 
-  const [mascotasMapa] = useState<MascotaConContacto[]>([
-    {
-      id: 1,
-      nombre: 'Maxi',
-      especie: 'Perro',
-      raza: 'Poodle',
-      estado: 'perdida',
-      latitud: -33.456, 
-      longitud: -70.662,
-      descripcion: 'Se asustó con unos ruidos y salió corriendo. Tiene un collar azul con su nombre grabado.',
-      usuarioId: 'maria_22',
-      fotoUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200',
-      distanciaKm: 1.2,
-      contacto: {
-        id: 'maria_22',
-        nombre: 'María Paz',
-        apellido: 'Pérez',
-        email: 'mparez.contacto@email.com',
-        telefono: '+56912345678',
-        direccion: 'Av. El Parrón 1230',
-        ciudad: 'Santiago'
+  const API_BFF_URL = 'http://localhost:8085/api/bff/mascotas-cercanas';
+
+  useEffect(() => {
+    const cargarMascotas = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(API_BFF_URL, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) throw new Error('Error en el BFF');
+        
+        const data = await response.json();
+        setMascotas(data);
+        
+        if (data.length > 0 && data[0].latitud && data[0].longitud) {
+          setPosicionMapa([data[0].latitud, data[0].longitud]);
+        }
+      } catch (error) {
+        console.error("Error cargando mapa:", error);
+      } finally {
+        setCargando(false);
       }
-    },
-    {
-      id: 2,
-      nombre: 'Gatito rescatado',
-      especie: 'Gato',
-      raza: 'Mestizo',
-      estado: 'encontrada',
-      latitud: -33.448, 
-      longitud: -70.675,
-      descripcion: 'Estaba atrapado en el motor de un auto llorando. Lo tengo resguardado temporalmente en mi patio.',
-      usuarioId: 'dante_123',
-      fotoUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200',
-      distanciaKm: 0.8,
-      contacto: {
-        id: 'dante_123',
-        nombre: 'Dante Valentín',
-        apellido: 'Castillo',
-        email: 'dante.castillo@email.com',
-        telefono: '+56987654321',
-        direccion: 'San Miguel Centro',
-        ciudad: 'Santiago'
-      }
-    }
-  ]);
+    };
+    cargarMascotas();
+  }, [getAccessTokenSilently]);
 
-  const [mascotaSeleccionada, setMascotaSeleccionada] = useState<MascotaConContacto | null>(null);
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarAlerta, setMostrarAlerta] = useState(false);
-
-  const crearIconoMascota = (pet: Mascota) => {
-    const colorBorder = pet.estado === 'perdida' ? '#ef4444' : '#10b981';
-    return L.divIcon({
-      className: 'custom-leaflet-icon',
-      html: `
-        <div class="map-avatar-container" style="border-color: ${colorBorder};">
-          <img src="${pet.fotoUrl}" class="map-avatar-img" />
-        </div>
-      `,
-      iconSize: [46, 46],
-      iconAnchor: [23, 23],
-      popupAnchor: [0, -25]
-    });
-  };
-
-  const abrirDetalleCompleto = (pet: MascotaConContacto) => {
-    setMascotaSeleccionada(pet);
-    setMostrarModal(true);
+  // Función para manejar fotos rotas
+  const handleImgError = (e: any, especie: string) => {
+    e.target.onerror = null;
+    e.target.src = especie === 'Gato' 
+      ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200' 
+      : 'https://images.unsplash.com/photo-1543466835-00a732f3804c?w=200';
   };
 
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
-        <IonToolbar color="light" className="map-header-toolbar">
-          <IonTitle className="map-header-title">Mapa en vivo</IonTitle>
+        <IonToolbar color="light">
+          <IonTitle style={{ fontWeight: '900', color: 'var(--ion-color-primary)' }}>Mapa de Reportes</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent>
-        <div className="map-container-wrapper">
-          <MapContainer center={center} zoom={14} className="map-leaflet-container" zoomControl={false}>
-            <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CartoDB</a>'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            />
-            
-            {mascotasMapa.map((pet) => (
-              <Marker key={pet.id} position={[pet.latitud, pet.longitud]} icon={crearIconoMascota(pet)}>
-                <Popup>
-                  <div className="custom-popup-container">
-                    <h3 className="custom-popup-title">{pet.nombre}</h3>
-                    
-                    <div className="custom-popup-distance">
-                      <IonIcon icon={locationOutline} className="popup-distance-icon" />
-                      <span>A {pet.distanciaKm.toFixed(1)} km</span>
-                    </div>
+      {/* Usamos flexbox para dividir la pantalla 55% mapa, 45% lista */}
+      <IonContent fullscreen scrollY={false}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          
+          {/* ÁREA DEL MAPA (55% de la pantalla) */}
+          <div style={{ flex: '0 0 55%', position: 'relative' }}>
+            <MapContainer center={posicionMapa} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+              <ChangeView center={posicionMapa} />
+              <TileLayer
+                attribution='&copy; OpenStreetMap'
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              />
+              
+              {mascotas.map(m => {
+                if (!m.latitud || !m.longitud) return null;
+                return (
+                  <Marker key={m.mascotaId} position={[m.latitud, m.longitud]}>
+                    <Popup>
+                      <div style={{ textAlign: 'center', minWidth: '150px' }}>
+                        <img 
+                          src={m.fotoUrl} 
+                          onError={(e) => handleImgError(e, m.especie)}
+                          alt="pet" 
+                          style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '8px' }}
+                        />
+                        <h3 style={{ margin: '10px 0 5px 0', fontWeight: 'bold' }}>{m.nombreMascota}</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', color: '#666', fontSize: '12px', marginBottom: '5px' }}>
+                          <IonIcon icon={callOutline} /> {m.contactoTelefono}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', color: '#666', fontSize: '12px' }}>
+                          <IonIcon icon={personOutline} /> {m.contactoNombre}
+                        </div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                )
+              })}
+            </MapContainer>
+          </div>
 
-                    <IonButton 
-                      expand="block" 
-                      size="small" 
-                      shape="round" 
-                      color={pet.estado === 'perdida' ? 'primary' : 'success'} 
-                      onClick={() => abrirDetalleCompleto(pet)} 
-                      className="popup-action-btn"
-                    >
-                      <IonIcon slot="end" icon={openOutline} />
-                      Ver Detalles
-                    </IonButton>
+          {/* ÁREA DE LA LISTA LATERAL/INFERIOR (45% de la pantalla con scroll) */}
+          <div style={{ flex: '1', backgroundColor: '#f8fafc', overflowY: 'auto', padding: '15px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <IonIcon icon={locationOutline} color="primary" /> Reportes Cercanos
+              </h2>
+              <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{mascotas.length} encontrados</span>
+            </div>
+
+            {cargando ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                <IonSpinner name="crescent" color="primary" />
+              </div>
+            ) : mascotas.length > 0 ? (
+              mascotas.map(m => (
+                <div 
+                  key={m.mascotaId} 
+                  onClick={() => setPosicionMapa([m.latitud, m.longitud])}
+                  style={{ 
+                    display: 'flex', 
+                    padding: '10px', 
+                    backgroundColor: '#fff', 
+                    borderRadius: '12px', 
+                    marginBottom: '10px',
+                    boxShadow: posicionMapa[0] === m.latitud ? '0 0 0 2px var(--ion-color-primary)' : '0 2px 5px rgba(0,0,0,0.05)',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <img 
+                    src={m.fotoUrl} 
+                    onError={(e) => handleImgError(e, m.especie)}
+                    alt="thumb"
+                    style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover', marginRight: '15px' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                      <strong style={{ fontSize: '1rem', color: '#1f2937' }}>{m.nombreMascota}</strong>
+                      <span style={{ 
+                        fontSize: '0.7rem', 
+                        fontWeight: 'bold', 
+                        padding: '3px 8px', 
+                        borderRadius: '10px',
+                        backgroundColor: m.estado === 'perdida' ? '#fee2e2' : '#dcfce7',
+                        color: m.estado === 'perdida' ? '#ef4444' : '#10b981'
+                      }}>
+                        {m.estado.toUpperCase()}
+                      </span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b7280' }}>
+                      {m.especie} • a {m.distanciaKm?.toFixed(1) || 0} km
+                    </p>
                   </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+                </div>
+              ))
+            ) : (
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginTop: '20px' }}>No hay reportes en esta zona.</p>
+            )}
+          </div>
+
         </div>
-
-        <IonModal isOpen={mostrarModal} onDidDismiss={() => setMostrarModal(false)}>
-          {mascotaSeleccionada && (
-            <IonContent color="light">
-              <IonFab vertical="top" horizontal="end" slot="fixed" className="modal-close-fab">
-                <IonFabButton color="light" size="small" onClick={() => setMostrarModal(false)}>
-                  <IonIcon icon={closeOutline} />
-                </IonFabButton>
-              </IonFab>
-
-              <div className="modal-pet-banner">
-                <img src={mascotaSeleccionada.fotoUrl} alt={mascotaSeleccionada.nombre} />
-                <div className="modal-pet-gradient"></div>
-                <IonBadge className={mascotaSeleccionada.estado === 'perdida' ? 'pet-card-badge-perdida modal-badge-pos' : 'pet-card-badge-encontrada modal-badge-pos'}>
-                  {mascotaSeleccionada.estado.toUpperCase()}
-                </IonBadge>
-              </div>
-
-              <div className="modal-pet-body">
-                <div className="modal-pet-header">
-                  <h1>{mascotaSeleccionada.nombre}</h1>
-                  <div className="modal-pet-taxonomia">
-                    <IonIcon icon={pawOutline} />
-                    <span>{mascotaSeleccionada.especie} {mascotaSeleccionada.raza ? `• ${mascotaSeleccionada.raza}` : ''}</span>
-                  </div>
-                </div>
-
-                <div className="modal-pet-stats-grid">
-                  <div className="modal-stat-card">
-                    <IonIcon icon={locationOutline} color="primary" />
-                    <span className="stat-label">Ubicación</span>
-                    <strong className="stat-value">A {mascotaSeleccionada.distanciaKm.toFixed(1)} km</strong>
-                  </div>
-                  <div className="modal-stat-card">
-                    <IonIcon icon={personOutline} color="secondary" />
-                    <span className="stat-label">Localidad</span>
-                    <strong className="stat-value">{mascotaSeleccionada.contacto.ciudad}</strong>
-                  </div>
-                </div>
-
-                <h3 className="modal-section-title">
-                  <IonIcon icon={informationCircleOutline} color="primary" />
-                  Descripción
-                </h3>
-                <p className="modal-pet-description-text">
-                  {mascotaSeleccionada.descripcion || 'Sin descripción adicional.'}
-                </p>
-
-                <h3 className="modal-section-title contact-section-title">
-                  <IonIcon icon={personOutline} color="primary" />
-                  Información de Contacto
-                </h3>
-                
-                <div className="modal-user-contact-card">
-                  <div className="contact-user-info">
-                    <h4>{mascotaSeleccionada.contacto.nombre} {mascotaSeleccionada.contacto.apellido}</h4>
-                    <p>{mascotaSeleccionada.contacto.direccion}, {mascotaSeleccionada.contacto.ciudad}</p>
-                  </div>
-
-                  <div className="contact-actions-row">
-                    <a href={`tel:${mascotaSeleccionada.contacto.telefono}`} className="contact-action-btn call">
-                      <IonIcon icon={callOutline} />
-                      <span>Llamar</span>
-                    </a>
-                    <a href={`mailto:${mascotaSeleccionada.contacto.email}?subject=Reporte de ${mascotaSeleccionada.nombre}`} className="contact-action-btn email">
-                      <IonIcon icon={mailOutline} />
-                      <span>Correo</span>
-                    </a>
-                    <div className="contact-action-btn chat" onClick={() => setMostrarAlerta(true)}>
-                      <IonIcon icon={chatbubblesOutline} />
-                      <span>Chat App</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </IonContent>
-          )}
-        </IonModal>
-
-        <IonAlert
-          isOpen={mostrarAlerta}
-          onDidDismiss={() => setMostrarAlerta(false)}
-          header="¿Abrir chat interno?"
-          message={`Te conectarás por mensajería en tiempo real con ${mascotaSeleccionada?.contacto.nombre}.`}
-          buttons={[
-            { text: 'Cancelar', role: 'cancel' },
-            { text: 'Ir al chat', handler: () => { setMostrarModal(false); } }
-          ]}
-        />
       </IonContent>
     </IonPage>
   );

@@ -19,6 +19,7 @@ class MascotaTest {
         mascota.setDescripcion("Muy amigable");
         mascota.setUsuarioId("user123");
         mascota.setFotoUrl("http://mifoto.com/1.jpg");
+        mascota.setTelefonoContacto("+56912345678"); // Testeando el nuevo atributo
 
         assertEquals(1L, mascota.getId());
         assertEquals("Firulais", mascota.getNombre());
@@ -30,39 +31,33 @@ class MascotaTest {
         assertEquals("Muy amigable", mascota.getDescripcion());
         assertEquals("user123", mascota.getUsuarioId());
         assertEquals("http://mifoto.com/1.jpg", mascota.getFotoUrl());
+        assertEquals("+56912345678", mascota.getTelefonoContacto());
     }
 
     @Test
     void testAllArgsConstructorAndLombokMethods() {
-        Mascota mascota1 = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url");
-        Mascota mascota2 = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url");
+        // Se agregó null al final para el telefonoContacto
+        Mascota mascota1 = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url", null);
+        Mascota mascota2 = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url", null);
         Mascota mascota3 = new Mascota();
 
-        // Probar equals y hashCode generados por @Data
         assertEquals(mascota1, mascota2);
         assertNotEquals(mascota1, mascota3);
         assertEquals(mascota1.hashCode(), mascota2.hashCode());
 
-        // Probar toString generado por @Data
         assertNotNull(mascota1.toString());
         assertTrue(mascota1.toString().contains("Luna"));
     }
 
     @Test
     void testLombokHiddenBranches() {
-        Mascota mascota = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url");
+        Mascota mascota = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url", null);
 
-        // 1. Comparar con null (cubre rama de nulidad)
         assertNotEquals(null, mascota);
-
-        // 2. Comparar con un objeto de otra clase (cubre rama de tipo)
         assertNotEquals(mascota, new Object());
-
-        // 3. Comparar con la misma instancia en memoria (cubre rama de identidad)
         assertEquals(mascota, mascota);
 
-        // 4. Probar setters modificando un objeto y comparando (cubre ramas de diferencia de campos)
-        Mascota mascotaDiferente = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url");
+        Mascota mascotaDiferente = new Mascota(1L, "Luna", "Gato", "Siamés", "Perdido", 1.0, 1.0, "Descripción", "user1", "url", null);
         mascotaDiferente.setNombre("Michi");
         assertNotEquals(mascota, mascotaDiferente);
     }
