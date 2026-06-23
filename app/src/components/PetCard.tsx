@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { 
   IonCard, IonCardContent, IonBadge, IonIcon, IonText, 
-  IonButton, useIonRouter, IonAlert, IonModal, IonContent, IonFab, IonFabButton 
+  IonButton, IonAlert, IonModal, IonContent, IonFab, IonFabButton 
 } from '@ionic/react';
 import { 
-  locationOutline, searchOutline, heartOutline, pawOutline, personOutline, closeOutline, informationCircleOutline 
+  locationOutline, searchOutline, heartOutline, pawOutline, personOutline, closeOutline, informationCircleOutline, callOutline 
 } from 'ionicons/icons';
 
+// 1. Agregamos los campos de contacto opcionales para no romper otras vistas
 export interface Mascota {
   id: number;
   nombre: string;
@@ -19,6 +20,8 @@ export interface Mascota {
   usuarioId: string;
   fotoUrl: string;
   distanciaKm: number;
+  contactoTelefono?: string; // Nuevo
+  contactoEmail?: string;    // Nuevo
 }
 
 interface PetCardProps {
@@ -26,14 +29,21 @@ interface PetCardProps {
 }
 
 export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
-  const router = useIonRouter();
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
 
   const isPerdida = pet.estado.toLowerCase() === 'perdida';
 
-  const confirmarContacto = () => {
-    router.push(`/chat/sala_mascota_${pet.id}`, 'forward', 'push');
+  // 2. Nueva lógica: Abrir el marcador telefónico del celular
+  const confirmarLlamada = () => {
+    // Si por algún motivo el backend no manda teléfono, evitamos que crashee
+    const telefono = pet.contactoTelefono || '';
+    if (telefono) {
+      window.open(`tel:${telefono}`, '_self');
+    } else {
+      alert("El usuario no ha proporcionado un número de teléfono visible.");
+    }
+    setMostrarAlerta(false);
     setMostrarModal(false);
   };
 
@@ -44,7 +54,7 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
 
   return (
     <>
-      {/* TARJETA PRINCIPAL (Usa las clases nativas de tu CSS) */}
+      {/* TARJETA PRINCIPAL */}
       <IonCard className="pet-card-container" onClick={() => setMostrarModal(true)}>
         
         <div className="pet-card-image-box">
@@ -74,7 +84,7 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
           <div className="pet-card-footer-layout">
             <div className="pet-card-distance-pill">
               <IonIcon icon={locationOutline} color="primary" />
-              <IonText>A {pet.distanciaKm.toFixed(1)} km</IonText>
+              <IonText>A {(pet.distanciaKm ?? 0).toFixed(1)} km</IonText>
             </div>
 
             <IonButton 
@@ -97,14 +107,12 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
       <IonModal isOpen={mostrarModal} onDidDismiss={() => setMostrarModal(false)}>
         <IonContent color="light">
           
-          {/* Botón flotante cerrar */}
           <IonFab vertical="top" horizontal="end" slot="fixed" className="modal-close-fab">
             <IonFabButton color="light" size="small" onClick={() => setMostrarModal(false)}>
               <IonIcon icon={closeOutline} />
             </IonFabButton>
           </IonFab>
 
-          {/* Banner de Imagen Superior */}
           <div className="modal-pet-banner">
             <img src={pet.fotoUrl} alt={pet.nombre} />
             <div className="modal-pet-gradient"></div>
@@ -113,7 +121,6 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
             </IonBadge>
           </div>
 
-          {/* Contenedor de la información explayada */}
           <div className="modal-pet-body">
             
             <div className="modal-pet-header">
@@ -124,12 +131,11 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
               </div>
             </div>
 
-            {/* Grid de píldoras de información */}
             <div className="modal-pet-stats-grid">
               <div className="modal-stat-card">
                 <IonIcon icon={locationOutline} color="primary" />
                 <span className="stat-label">Distancia</span>
-                <strong className="stat-value">{pet.distanciaKm.toFixed(1)} km</strong>
+                <strong className="stat-value">{(pet.distanciaKm ?? 0).toFixed(1)} km</strong>
               </div>
               
               <div className="modal-stat-card">
@@ -139,7 +145,6 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
               </div>
             </div>
 
-            {/* Sección de la Descripción Completa */}
             <h3 className="modal-section-title">
               <IonIcon icon={informationCircleOutline} color="primary" />
               Descripción
@@ -148,7 +153,6 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
               {pet.descripcion || 'Sin descripción adicional proporcionada.'}
             </p>
 
-            {/* Botón de acción definitivo */}
             <IonButton 
               expand="block" 
               shape="round" 
@@ -156,23 +160,23 @@ export const PetCard: React.FC<PetCardProps> = ({ pet }) => {
               onClick={() => setMostrarAlerta(true)}
               className="modal-submit-btn"
             >
-              <IonIcon slot="start" icon={isPerdida ? searchOutline : heartOutline} />
-              {isPerdida ? '¡Lo encontré!' : '¡Es mío!'}
+              <IonIcon slot="start" icon={callOutline} />
+              Contactar por Teléfono
             </IonButton>
 
           </div>
         </IonContent>
       </IonModal>
 
-      {/* ALERTA */}
+      {/* ALERTA DE CONFIRMACIÓN DE LLAMADA */}
       <IonAlert
         isOpen={mostrarAlerta}
         onDidDismiss={() => setMostrarAlerta(false)}
-        header="¿Iniciar contacto?"
-        message={`Se enviará una notificación a ${pet.usuarioId} para coordinar.`}
+        header="Contacto Directo"
+        message={`¿Deseas llamar al número registrado por ${pet.usuarioId} para coordinar?`}
         buttons={[
           { text: 'Cancelar', role: 'cancel', cssClass: 'secondary' },
-          { text: 'Sí, contactar', handler: () => confirmarContacto() }
+          { text: 'Llamar ahora', handler: () => confirmarLlamada() }
         ]}
       />
     </>
